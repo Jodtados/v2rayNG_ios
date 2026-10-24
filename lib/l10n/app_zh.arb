@@ -454,7 +454,7 @@
   "prototypeUseEntryServers": "使用 {count} 个接入节点",
   "prototypeSource": "来源",
   "prototypeNotTested": "尚未检测",
-  "prototypeNoMatchingSubscriptions": "没有匹配的订阅或服务器",
+  "prototypeNoMatchingSubscriptions": "没有匹配结果",
   "prototypeCurrentSelection": "当前选择",
   "prototypeNoServersYet": "还没有可用的服务器",
   "prototypeAddProviderSubscriptionHint": "添加服务商提供的订阅链接，或导入服务器配置即可开始。",
@@ -508,6 +508,8 @@
   "prototypeSubscriptionSaved": "订阅已保存",
   "prototypeChangesApplyToFutureUpdates": "修改会用于后续更新，不影响当前运行中的连接。",
   "prototypeSmartRoutingSettings": "智能路由设置",
+  "smartRoutingDirectAndBlock": "直连与拦截",
+  "smartRoutingProxyConnection": "代理连接",
   "prototypeDirectPrivateAddresses": "局域网与私有地址直连",
   "prototypeDirectPrivateAddressesHint": "访问路由器、NAS 和其他私有地址时不经过 VPN。",
   "prototypeDirectAppleServices": "Apple 服务直连",
@@ -946,5 +948,17 @@
   "manualOrderMoveDown": "下移",
   "manualOrderChanged": "列表已变化，请重新载入后整理。",
   "manualOrderReload": "重新载入",
-  "manualOrderClearSearch": "清空搜索后可整理顺序。"
+  "manualOrderClearSearch": "清空搜索后可整理顺序。",
+  "subscriptionAdvancedOff": "未开启 HWID 和 Age",
+  "subscriptionAdvancedConfigured": "已配置：{options}",
+  "@subscriptionAdvancedConfigured": {
+    "placeholders": {"options": {"type": "String"}}
+  },
+  "jsonEditorDiscardTitle": "放弃未保存的更改？",
+  "jsonEditorDiscardMessage": "JSON 更改尚未保存。",
+  "jsonEditorKeepEditing": "继续编辑",
+  "jsonEditorDiscardChanges": "放弃更改",
+  "tunnelDnsIpv4Invalid": "请输入有效的 IPv4 地址。",
+  "tunnelDnsIpv6Invalid": "请输入有效的 IPv6 地址。",
+  "tunnelDnsServerNameRequired": "请输入 DNS over TLS 服务器名称。"
 }

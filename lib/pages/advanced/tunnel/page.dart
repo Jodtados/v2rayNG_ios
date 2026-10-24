@@ -19,15 +19,22 @@ import 'package:onexray/service/connect/settings.dart';
 /// Embedded below Advanced's tabs; the footer belongs to this full-page body.
 class VpnTunnelPane extends StatelessWidget {
   final OpenTunnelPage? openTunnel;
-  const VpnTunnelPane({super.key, this.openTunnel});
+  final PolicyEditorController Function()? createController;
+
+  const VpnTunnelPane({super.key, this.openTunnel, this.createController});
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => PolicyEditorController()..load(context),
+    create: (context) {
+      final controller = createController?.call() ?? PolicyEditorController();
+      if (controller.draft == null) controller.load(context);
+      return controller;
+    },
     child: BlocBuilder<PolicyEditorController, PolicyEditorPageState>(
       builder: (context, state) {
         final controller = context.read<PolicyEditorController>();
         final l = AppLocalizations.of(context)!;
+        final palette = ColorManager.palette(context);
         final width = MediaQuery.sizeOf(context).width;
         final mobile = width <= AppLayout.mobileBreakpoint;
         final gutter = mobile ? 15.0 : AppSpacing.advancedDesktopGutter(width);
@@ -59,33 +66,38 @@ class VpnTunnelPane extends StatelessWidget {
                     icon: LucideIcons.activity,
                     title: l.prototypeConnectionStatus,
                     children: [
-                      SettingRow(
+                      PolicyValueRow(
                         title: l.prototypeSystemVpn,
                         leading: Icon(
-                          LucideIcons.circleCheck,
-                          color: ColorManager.palette(context).running,
+                          LucideIcons.shield,
+                          color: palette.mutedStrong,
                         ),
-                        decorateLeading: false,
                         minHeight: mobile ? 52 : 56,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: mobile ? 13 : 14,
-                          vertical: 10,
-                        ),
                         titleStyle:
                             (mobile
                                     ? AppTypography.settingsStatus
                                     : AppTypography.desktopSettingsStatus)
-                                .copyWith(
-                                  color: ColorManager.palette(context).running,
-                                ),
+                                .copyWith(color: palette.foreground),
                         valueStyle:
                             (mobile
                                     ? AppTypography.settingsStatus
                                     : AppTypography.desktopSettingsStatus)
                                 .copyWith(
-                                  color: ColorManager.primaryText(context),
+                                  color: switch (state.connection.phase) {
+                                    ConnectionPhase.connected =>
+                                      palette.runningText,
+                                    ConnectionPhase.preparing ||
+                                    ConnectionPhase.connecting ||
+                                    ConnectionPhase.disconnecting =>
+                                      palette.restartingText,
+                                    ConnectionPhase.failed =>
+                                      palette.destructive,
+                                    ConnectionPhase.disconnected =>
+                                      palette.mutedStrong,
+                                  },
                                 ),
                         value: _status(controller, l),
+                        valueTextDirection: null,
                       ),
                     ],
                   ),
@@ -117,26 +129,50 @@ class VpnTunnelPane extends StatelessWidget {
                           spacing: 18,
                           children: [
                             DnsTextField(
+                              key: const ValueKey('tunnel-dns-ipv4'),
                               label: l.prototypeIpv4Dns,
                               value:
                                   controller.value['dnsIpv4Address'] as String,
                               enabled: !controller.blocked,
+                              focusNode: controller.dnsFocusNode(
+                                TunnelDnsField.ipv4,
+                              ),
+                              errorText: controller.dnsErrorText(
+                                l,
+                                TunnelDnsField.ipv4,
+                              ),
                               onChanged: (value) =>
                                   controller.update('dnsIpv4Address', value),
                             ),
                             DnsTextField(
+                              key: const ValueKey('tunnel-dns-ipv6'),
                               label: l.prototypeIpv6Dns,
                               value:
                                   controller.value['dnsIpv6Address'] as String,
                               enabled: !controller.blocked,
+                              focusNode: controller.dnsFocusNode(
+                                TunnelDnsField.ipv6,
+                              ),
+                              errorText: controller.dnsErrorText(
+                                l,
+                                TunnelDnsField.ipv6,
+                              ),
                               onChanged: (value) =>
                                   controller.update('dnsIpv6Address', value),
                             ),
                             DnsTextField(
+                              key: const ValueKey('tunnel-dns-server-name'),
                               label: l.prototypeDomain,
                               value:
                                   controller.value['dnsServerName'] as String,
                               enabled: !controller.blocked,
+                              focusNode: controller.dnsFocusNode(
+                                TunnelDnsField.serverName,
+                              ),
+                              errorText: controller.dnsErrorText(
+                                l,
+                                TunnelDnsField.serverName,
+                              ),
                               onChanged: (value) =>
                                   controller.update('dnsServerName', value),
                             ),

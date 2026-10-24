@@ -19,11 +19,20 @@ class SubscriptionFormView extends StatelessWidget {
     required this.nameLabel,
     required this.nameController,
     this.nameHint,
+    this.nameErrorText,
+    this.nameFocusNode,
+    this.onNameChanged,
     required this.urlLabel,
     required this.urlController,
     required this.userAgentController,
     this.urlHint,
     this.urlHelper,
+    this.urlErrorText,
+    this.urlFocusNode,
+    this.onUrlChanged,
+    this.userAgentErrorText,
+    this.userAgentFocusNode,
+    this.onUserAgentChanged,
     required this.panel,
     required this.mode,
     required this.onPanelChanged,
@@ -64,11 +73,20 @@ class SubscriptionFormView extends StatelessWidget {
   final String nameLabel;
   final TextEditingController nameController;
   final String? nameHint;
+  final String? nameErrorText;
+  final FocusNode? nameFocusNode;
+  final ValueChanged<String>? onNameChanged;
   final String urlLabel;
   final TextEditingController urlController;
   final TextEditingController userAgentController;
   final String? urlHint;
   final String? urlHelper;
+  final String? urlErrorText;
+  final FocusNode? urlFocusNode;
+  final ValueChanged<String>? onUrlChanged;
+  final String? userAgentErrorText;
+  final FocusNode? userAgentFocusNode;
+  final ValueChanged<String>? onUserAgentChanged;
   final SubscriptionPanel panel;
   final SubscriptionMode? mode;
   final ValueChanged<SubscriptionPanel>? onPanelChanged;
@@ -118,13 +136,27 @@ class SubscriptionFormView extends StatelessWidget {
         controller: userAgentController,
         hintText: AppLocalizations.of(context)!.subscriptionUserAgentHint,
         textDirection: TextDirection.ltr,
+        errorText: userAgentErrorText,
+        focusNode: userAgentFocusNode,
+        onChanged: onUserAgentChanged,
       ),
       const SizedBox(height: 14),
       _configurationCard(context),
       const SizedBox(height: 14),
-      _hwidCard(context),
-      const SizedBox(height: 14),
-      _encryptionCard(context),
+      _SubscriptionAdvanced(
+        configured: hwidEnabled || hasAgeKeys,
+        hasError: ageKeyPairErrorText != null,
+        summary: hwidEnabled || hasAgeKeys
+            ? AppLocalizations.of(context)!.subscriptionAdvancedConfigured(
+                [if (hwidEnabled) 'HWID', if (hasAgeKeys) 'Age'].join(' · '),
+              )
+            : AppLocalizations.of(context)!.subscriptionAdvancedOff,
+        child: Column(
+          spacing: 14,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [_hwidCard(context), _encryptionCard(context)],
+        ),
+      ),
     ],
   );
 
@@ -276,6 +308,9 @@ class SubscriptionFormView extends StatelessWidget {
         label: nameLabel,
         controller: nameController,
         hintText: nameHint ?? nameLabel,
+        errorText: nameErrorText,
+        focusNode: nameFocusNode,
+        onChanged: onNameChanged,
       ),
       _editableField(
         context,
@@ -285,6 +320,9 @@ class SubscriptionFormView extends StatelessWidget {
         helperText: urlHelper,
         textDirection: TextDirection.ltr,
         keyboardType: TextInputType.url,
+        errorText: urlErrorText,
+        focusNode: urlFocusNode,
+        onChanged: onUrlChanged,
       ),
     ];
     if (MediaQuery.sizeOf(context).width <= AppLayout.mobileBreakpoint) {
@@ -417,6 +455,7 @@ class SubscriptionFormView extends StatelessWidget {
                           Expanded(
                             child: _input(
                               context,
+                              label: ageSecretKeyLabel,
                               controller: ageSecretKeyController,
                               hintText: ageSecretKeyHint,
                               obscureText: obscureAgeSecretKey,
@@ -431,8 +470,18 @@ class SubscriptionFormView extends StatelessWidget {
                             onPressed: onToggleAgeSecretKeyVisibility,
                             style: IconButton.styleFrom(
                               foregroundColor: palette.mutedStrong,
-                              minimumSize: const Size.square(36),
-                              maximumSize: const Size.square(36),
+                              minimumSize: Size.square(
+                                AppLayout.touchExtent(
+                                  36,
+                                  platform: Theme.of(context).platform,
+                                ),
+                              ),
+                              maximumSize: Size.square(
+                                AppLayout.touchExtent(
+                                  36,
+                                  platform: Theme.of(context).platform,
+                                ),
+                              ),
                               padding: EdgeInsets.zero,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
@@ -477,7 +526,9 @@ class SubscriptionFormView extends StatelessWidget {
     Widget generate(AgeKeyType type, String label) => OutlinedButton.icon(
       style: OutlinedButton.styleFrom(
         foregroundColor: palette.foreground,
-        minimumSize: const Size(0, 36),
+        minimumSize: Size.square(
+          AppLayout.touchExtent(36, platform: Theme.of(context).platform),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         textStyle: AppTypography.subscriptionAgeAction,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -504,7 +555,9 @@ class SubscriptionFormView extends StatelessWidget {
           ? null
           : onClearAgeKey,
       style: TextButton.styleFrom(
-        minimumSize: const Size(0, 38),
+        minimumSize: Size.square(
+          AppLayout.touchExtent(38, platform: Theme.of(context).platform),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         textStyle: AppTypography.subscriptionClear,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -541,6 +594,7 @@ class SubscriptionFormView extends StatelessWidget {
 
   Widget _input(
     BuildContext context, {
+    required String label,
     required TextEditingController controller,
     String? hintText,
     TextDirection? textDirection,
@@ -548,30 +602,51 @@ class SubscriptionFormView extends StatelessWidget {
     bool obscureText = false,
     bool enabled = true,
     ValueChanged<String>? onChanged,
+    FocusNode? focusNode,
+    String? errorText,
   }) {
     final palette = ColorManager.palette(context);
     return Directionality(
       textDirection: textDirection ?? Directionality.of(context),
-      child: ShadInput(
-        enabled: enabled,
-        controller: controller,
-        placeholder: hintText == null ? null : Text(hintText),
-        constraints: const BoxConstraints(minHeight: 42),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        style: AppTypography.subscriptionField,
-        placeholderStyle: AppTypography.subscriptionField.copyWith(
-          color: palette.mutedForeground,
-        ),
-        textDirection: textDirection,
-        keyboardType: keyboardType,
-        obscureText: obscureText,
-        autocorrect: false,
-        enableSuggestions: false,
-        onChanged: onChanged,
-        decoration: ShadDecoration(
-          border: ShadBorder.all(
-            color: palette.border,
-            radius: BorderRadius.circular(AppRadii.card),
+      child: MergeSemantics(
+        child: Semantics(
+          label: label,
+          hint: errorText ?? hintText,
+          child: ShadInput(
+            enabled: enabled,
+            controller: controller,
+            focusNode: focusNode,
+            placeholder: hintText == null
+                ? null
+                : ExcludeSemantics(child: Text(hintText)),
+            constraints: BoxConstraints(
+              minHeight: AppLayout.touchExtent(
+                42,
+                platform: Theme.of(context).platform,
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            style: AppTypography.subscriptionField,
+            placeholderStyle: AppTypography.subscriptionField.copyWith(
+              color: palette.mutedForeground,
+            ),
+            textDirection: textDirection,
+            keyboardType: keyboardType,
+            obscureText: obscureText,
+            autocorrect: false,
+            enableSuggestions: false,
+            onChanged: onChanged,
+            decoration: ShadDecoration(
+              hasError: errorText != null,
+              border: ShadBorder.all(
+                color: palette.border,
+                radius: BorderRadius.circular(AppRadii.card),
+              ),
+              errorBorder: ShadBorder.all(
+                color: palette.destructive,
+                radius: BorderRadius.circular(AppRadii.card),
+              ),
+            ),
           ),
         ),
       ),
@@ -587,6 +662,8 @@ class SubscriptionFormView extends StatelessWidget {
     TextDirection? textDirection,
     TextInputType? keyboardType,
     ValueChanged<String>? onChanged,
+    FocusNode? focusNode,
+    String? errorText,
     bool enabled = true,
   }) {
     return Column(
@@ -596,13 +673,26 @@ class SubscriptionFormView extends StatelessWidget {
         _fieldLabel(context, label),
         _input(
           context,
+          label: label,
           controller: controller,
           hintText: hintText,
           textDirection: textDirection,
           keyboardType: keyboardType,
           onChanged: onChanged,
+          focusNode: focusNode,
+          errorText: errorText,
           enabled: enabled,
         ),
+        if (errorText != null)
+          Semantics(
+            liveRegion: true,
+            child: Text(
+              errorText,
+              style: AppTypography.subscriptionAgeWarning.copyWith(
+                color: ColorManager.palette(context).destructive,
+              ),
+            ),
+          ),
         if (helperText != null && helperText.isNotEmpty)
           Text(
             helperText,
@@ -615,11 +705,108 @@ class SubscriptionFormView extends StatelessWidget {
   }
 
   Widget _fieldLabel(BuildContext context, String text) {
-    return Text(
+    final label = Text(
       text,
       style: AppTypography.subscriptionField.copyWith(
         color: ColorManager.palette(context).mutedStrong,
       ),
+    );
+    // macOS's native text input bridge does not expose the merged field label.
+    // Keep the adjacent visible label available to accessibility traversal.
+    return Theme.of(context).platform == TargetPlatform.macOS
+        ? label
+        : ExcludeSemantics(child: label);
+  }
+}
+
+class _SubscriptionAdvanced extends StatefulWidget {
+  const _SubscriptionAdvanced({
+    required this.configured,
+    required this.hasError,
+    required this.summary,
+    required this.child,
+  });
+
+  final bool configured;
+  final bool hasError;
+  final String summary;
+  final Widget child;
+
+  @override
+  State<_SubscriptionAdvanced> createState() => _SubscriptionAdvancedState();
+}
+
+class _SubscriptionAdvancedState extends State<_SubscriptionAdvanced> {
+  late bool _expanded = widget.configured || widget.hasError;
+
+  @override
+  void didUpdateWidget(covariant _SubscriptionAdvanced oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if ((!oldWidget.configured && widget.configured) ||
+        (!oldWidget.hasError && widget.hasError)) {
+      _expanded = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = ColorManager.palette(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          button: true,
+          expanded: _expanded,
+          child: InkWell(
+            key: const ValueKey('subscription-advanced'),
+            borderRadius: BorderRadius.circular(AppRadii.card),
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+              child: Row(
+                spacing: 12,
+                children: [
+                  Expanded(
+                    child: Column(
+                      spacing: 3,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.prototypeAdvanced,
+                          style: AppTypography.subscriptionAgeTitle,
+                        ),
+                        Text(
+                          widget.summary,
+                          style: AppTypography.subscriptionAgeOptional.copyWith(
+                            color: palette.mutedForeground,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    _expanded
+                        ? LucideIcons.arrowDown
+                        : LucideIcons.arrowRightDir,
+                    size: 18,
+                    textDirection: Directionality.of(context),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        ExcludeFocus(
+          excluding: !_expanded,
+          child: Offstage(
+            offstage: !_expanded,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: widget.child,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

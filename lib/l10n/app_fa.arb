@@ -454,7 +454,7 @@
     "prototypeUseEntryServers": "استفاده از {count} سرور ورودی",
     "prototypeSource": "منبع",
     "prototypeNotTested": "آزمایش نشده",
-    "prototypeNoMatchingSubscriptions": "هیچ اشتراکی مطابقت ندارد",
+    "prototypeNoMatchingSubscriptions": "نتیجه‌ای یافت نشد",
     "prototypeCurrentSelection": "انتخاب فعلی",
     "prototypeNoServersYet": "هنوز سروری وجود ندارد",
     "prototypeAddProviderSubscriptionHint": "برای شروع، اشتراک یک ارائه‌دهنده را اضافه کنید یا پیکربندی سرور وارد کنید.",
@@ -508,6 +508,8 @@
     "prototypeSubscriptionSaved": "اشتراک ذخیره شد",
     "prototypeChangesApplyToFutureUpdates": "تغییرات در به‌روزرسانی‌های بعدی اعمال می‌شوند، نه در اتصال جاری.",
     "prototypeSmartRoutingSettings": "تنظیمات مسیریابی هوشمند",
+    "smartRoutingDirectAndBlock": "اتصال مستقیم و مسدودسازی",
+    "smartRoutingProxyConnection": "اتصال‌های پراکسی",
     "prototypeDirectPrivateAddresses": "اتصال مستقیم به شبکهٔ محلی و نشانی‌های خصوصی",
     "prototypeDirectPrivateAddressesHint": "دسترسی به روترها، دستگاه‌های NAS و نشانی‌های خصوصی بدون استفاده از VPN.",
     "prototypeDirectAppleServices": "اتصال مستقیم به خدمات Apple",
@@ -946,5 +948,17 @@
   "manualOrderMoveDown": "انتقال به پایین",
   "manualOrderChanged": "فهرست تغییر کرد. پیش از مرتب‌سازی دوباره بارگیری کنید.",
   "manualOrderReload": "بارگیری دوباره",
-  "manualOrderClearSearch": "برای مرتب‌سازی، جستجو را پاک کنید."
+  "manualOrderClearSearch": "برای مرتب‌سازی، جستجو را پاک کنید.",
+  "subscriptionAdvancedOff": "HWID و Age غیرفعال هستند",
+  "subscriptionAdvancedConfigured": "پیکربندی‌شده: {options}",
+  "@subscriptionAdvancedConfigured": {
+    "placeholders": {"options": {"type": "String"}}
+  },
+  "jsonEditorDiscardTitle": "تغییرات ذخیره‌نشده کنار گذاشته شوند؟",
+  "jsonEditorDiscardMessage": "تغییرات JSON هنوز ذخیره نشده‌اند.",
+  "jsonEditorKeepEditing": "ادامهٔ ویرایش",
+  "jsonEditorDiscardChanges": "کنار گذاشتن تغییرات",
+  "tunnelDnsIpv4Invalid": "یک نشانی معتبر IPv4 وارد کنید.",
+  "tunnelDnsIpv6Invalid": "یک نشانی معتبر IPv6 وارد کنید.",
+  "tunnelDnsServerNameRequired": "نام سرور DNS over TLS را وارد کنید."
 }

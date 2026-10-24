@@ -454,7 +454,7 @@
   "prototypeUseEntryServers": "Использовать входные узлы: {count}",
   "prototypeSource": "Источник",
   "prototypeNotTested": "Не проверен",
-  "prototypeNoMatchingSubscriptions": "Подписки не найдены",
+  "prototypeNoMatchingSubscriptions": "Ничего не найдено",
   "prototypeCurrentSelection": "Текущий выбор",
   "prototypeNoServersYet": "Серверов пока нет",
   "prototypeAddProviderSubscriptionHint": "Для начала добавьте подписку провайдера или импортируйте конфигурацию сервера.",
@@ -508,6 +508,8 @@
   "prototypeSubscriptionSaved": "Подписка сохранена",
   "prototypeChangesApplyToFutureUpdates": "Изменения применятся к будущим обновлениям, но не к текущему подключению.",
   "prototypeSmartRoutingSettings": "Настройки умной маршрутизации",
+  "smartRoutingDirectAndBlock": "Прямой трафик и блокировка",
+  "smartRoutingProxyConnection": "Прокси-соединения",
   "prototypeDirectPrivateAddresses": "Локальная сеть и частные адреса напрямую",
   "prototypeDirectPrivateAddressesHint": "Доступ к роутерам, NAS и частным адресам без VPN.",
   "prototypeDirectAppleServices": "Службы Apple напрямую",
@@ -946,5 +948,17 @@
   "manualOrderMoveDown": "Ниже",
   "manualOrderChanged": "Список изменился. Загрузите его снова перед сортировкой.",
   "manualOrderReload": "Загрузить заново",
-  "manualOrderClearSearch": "Очистите поиск для изменения порядка."
+  "manualOrderClearSearch": "Очистите поиск для изменения порядка.",
+  "subscriptionAdvancedOff": "HWID и Age отключены",
+  "subscriptionAdvancedConfigured": "Настроено: {options}",
+  "@subscriptionAdvancedConfigured": {
+    "placeholders": {"options": {"type": "String"}}
+  },
+  "jsonEditorDiscardTitle": "Отменить несохранённые изменения?",
+  "jsonEditorDiscardMessage": "Изменения JSON ещё не сохранены.",
+  "jsonEditorKeepEditing": "Продолжить редактирование",
+  "jsonEditorDiscardChanges": "Отменить изменения",
+  "tunnelDnsIpv4Invalid": "Введите корректный адрес IPv4.",
+  "tunnelDnsIpv6Invalid": "Введите корректный адрес IPv6.",
+  "tunnelDnsServerNameRequired": "Введите имя сервера DNS over TLS."
 }

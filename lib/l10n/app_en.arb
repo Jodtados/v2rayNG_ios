@@ -1121,9 +1121,9 @@
   "@prototypeNotTested": {
     "description": "Approved prototype copy: Not tested"
   },
-  "prototypeNoMatchingSubscriptions": "No matching subscriptions",
+  "prototypeNoMatchingSubscriptions": "No matching results",
   "@prototypeNoMatchingSubscriptions": {
-    "description": "Approved prototype copy: No matching subscriptions"
+    "description": "Empty search results for subscriptions, servers, and manual groups"
   },
   "prototypeCurrentSelection": "Current selection",
   "@prototypeCurrentSelection": {
@@ -1403,6 +1403,14 @@
   "prototypeSmartRoutingSettings": "Smart Routing settings",
   "@prototypeSmartRoutingSettings": {
     "description": "Approved prototype copy: Smart Routing settings"
+  },
+  "smartRoutingDirectAndBlock": "Direct and blocked traffic",
+  "@smartRoutingDirectAndBlock": {
+    "description": "Smart Routing section for direct traffic and blocking rules"
+  },
+  "smartRoutingProxyConnection": "Proxy connections",
+  "@smartRoutingProxyConnection": {
+    "description": "Smart Routing section for proxy connection settings"
   },
   "prototypeDirectPrivateAddresses": "Direct local network and private addresses",
   "@prototypeDirectPrivateAddresses": {
@@ -3115,5 +3123,17 @@
   "manualOrderMoveDown": "Move down",
   "manualOrderChanged": "The list changed. Reload it before arranging again.",
   "manualOrderReload": "Reload order",
-  "manualOrderClearSearch": "Clear search to arrange."
+  "manualOrderClearSearch": "Clear search to arrange.",
+  "subscriptionAdvancedOff": "HWID and Age are off",
+  "subscriptionAdvancedConfigured": "Configured: {options}",
+  "@subscriptionAdvancedConfigured": {
+    "placeholders": {"options": {"type": "String"}}
+  },
+  "jsonEditorDiscardTitle": "Discard unsaved changes?",
+  "jsonEditorDiscardMessage": "Your JSON changes have not been saved.",
+  "jsonEditorKeepEditing": "Keep editing",
+  "jsonEditorDiscardChanges": "Discard changes",
+  "tunnelDnsIpv4Invalid": "Enter a valid IPv4 address.",
+  "tunnelDnsIpv6Invalid": "Enter a valid IPv6 address.",
+  "tunnelDnsServerNameRequired": "Enter the DNS over TLS server name."
 }

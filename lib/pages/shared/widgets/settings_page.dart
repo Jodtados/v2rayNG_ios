@@ -195,7 +195,12 @@ class AppConfirmationDialog extends StatelessWidget {
       minimumSize: WidgetStatePropertyAll(
         Size(
           0,
-          mobile ? AppLayout.mobileButtonMinHeight : AppLayout.buttonMinHeight,
+          AppLayout.touchExtent(
+            mobile
+                ? AppLayout.mobileButtonMinHeight
+                : AppLayout.buttonMinHeight,
+            platform: Theme.of(context).platform,
+          ),
         ),
       ),
       padding: const WidgetStatePropertyAll(
@@ -304,11 +309,17 @@ class AppConfirmationDialog extends StatelessWidget {
                                       Navigator.pop(context, false),
                                   style: IconButton.styleFrom(
                                     foregroundColor: palette.mutedStrong,
-                                    minimumSize: const Size.square(
-                                      AppLayout.dialogCloseSize,
+                                    minimumSize: Size.square(
+                                      AppLayout.touchExtent(
+                                        AppLayout.dialogCloseSize,
+                                        platform: Theme.of(context).platform,
+                                      ),
                                     ),
-                                    maximumSize: const Size.square(
-                                      AppLayout.dialogCloseSize,
+                                    maximumSize: Size.square(
+                                      AppLayout.touchExtent(
+                                        AppLayout.dialogCloseSize,
+                                        platform: Theme.of(context).platform,
+                                      ),
                                     ),
                                     padding: EdgeInsets.zero,
                                     tapTargetSize:
@@ -354,35 +365,72 @@ class AppConfirmationDialog extends StatelessWidget {
                       border: Border(top: BorderSide(color: palette.border)),
                     ),
                     child: LayoutBuilder(
-                      builder: (context, constraints) => Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: constraints.maxWidth * .62,
+                      builder: (context, constraints) {
+                        final labelStyle = DefaultTextStyle.of(context).style
+                            .merge(AppTypography.control);
+                        double naturalWidth(String label) {
+                          final painter = TextPainter(
+                            text: TextSpan(
+                              text: label,
+                              style: MediaQuery.boldTextOf(context)
+                                  ? labelStyle.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    )
+                                  : labelStyle,
                             ),
-                            child: IntrinsicWidth(
-                              child: OutlinedButton(
-                                onPressed: () => Navigator.pop(context, false),
-                                style: buttonStyle.copyWith(
-                                  side: WidgetStatePropertyAll(
-                                    BorderSide(color: palette.borderStrong),
-                                  ),
-                                ),
-                                child: Text(
-                                  cancelLabel,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                            textDirection: Directionality.of(context),
+                            textScaler: MediaQuery.textScalerOf(context),
+                            locale: Localizations.localeOf(context),
+                          )..layout();
+                          final width =
+                              painter.width + AppSpacing.buttonHorizontal * 2;
+                          painter.dispose();
+                          return width;
+                        }
+
+                        final cancelWidth = naturalWidth(cancelLabel);
+                        final confirmWidth = naturalWidth(confirmLabel);
+                        final cancel = OutlinedButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          style: buttonStyle.copyWith(
+                            side: WidgetStatePropertyAll(
+                              BorderSide(color: palette.borderStrong),
                             ),
                           ),
-                          const SizedBox(width: AppSpacing.actionGap),
-                          if (mobile && expandConfirm)
-                            Expanded(child: confirm)
-                          else
-                            Flexible(child: confirm),
-                        ],
-                      ),
+                          child: Text(cancelLabel, textAlign: TextAlign.center),
+                        );
+                        if (cancelWidth + confirmWidth + AppSpacing.actionGap >
+                            constraints.maxWidth) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              cancel,
+                              const SizedBox(height: AppSpacing.actionGap),
+                              confirm,
+                            ],
+                          );
+                        }
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: math.max(
+                                  constraints.maxWidth * .62,
+                                  cancelWidth,
+                                ),
+                              ),
+                              child: IntrinsicWidth(child: cancel),
+                            ),
+                            const SizedBox(width: AppSpacing.actionGap),
+                            if (mobile && expandConfirm)
+                              Expanded(child: confirm)
+                            else
+                              Flexible(child: confirm),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ],

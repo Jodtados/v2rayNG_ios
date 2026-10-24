@@ -120,21 +120,32 @@ void main() {
     Locale locale = const Locale('en'),
     Brightness brightness = Brightness.light,
     bool groupPage = false,
+    Size? groupViewport,
+    double height = 900,
     ValueNotifier<bool>? pageVisibility,
   }) async {
     tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = Size(width, 900);
+    tester.view.physicalSize = Size(width, height);
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.view.resetPhysicalSize);
     final mobile = width <= AppLayout.mobileBreakpoint;
     final browser = BlocBuilder<_Controller, ServersPageState>(
       bloc: controller,
-      builder: (context, _) => groupPage
-          ? ServerGroupView(
-              controller: controller,
-              group: controller.groups(AppLocalizations.of(context)!).first,
-            )
-          : ServerBrowser(controller: controller, scroll: scroll),
+      builder: (context, _) {
+        final child = groupPage
+            ? ServerGroupView(
+                controller: controller,
+                group: controller.groups(AppLocalizations.of(context)!).first,
+                embedded: groupViewport != null,
+              )
+            : ServerBrowser(controller: controller, scroll: scroll);
+        return groupViewport == null
+            ? child
+            : Align(
+                alignment: Alignment.topRight,
+                child: SizedBox.fromSize(size: groupViewport, child: child),
+              );
+      },
     );
     await tester.pumpWidget(
       MaterialApp(
@@ -236,11 +247,18 @@ void main() {
         controller.groups(labels).single.visibleRows.map((row) => row.id),
         [2],
       );
-      await tester.enterText(find.byType(TextField).first, '');
+      await tester.tap(find.byKey(const ValueKey('server-search-clear')));
       await tester.pumpAndSettle();
+      expect(controller.search.text, isEmpty);
+      expect(controller.query, isEmpty);
       expect(
         controller.groups(labels).single.visibleRows.map((row) => row.id),
         [2, 1],
+      );
+      expect(controller.catalog.sortOrder, ServerSortOrder.name);
+      expect(
+        controller.configuration.connection.selection.kind,
+        SelectionKind.automatic,
       );
 
       await tester.tap(find.byTooltip('Sort servers'));
@@ -253,6 +271,38 @@ void main() {
         controller.configuration.connection.selection.kind,
         SelectionKind.automatic,
       );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'empty search can be cleared without changing selection or order',
+    (tester) async {
+      await pumpBrowser(tester, 427);
+      final l = AppLocalizations.of(
+        tester.element(find.byType(ServerBrowser)),
+      )!;
+      final selection = controller.configuration.connection.selection.toJson();
+      final order = controller.catalog.sortOrder;
+      final ids = controller.servers.map((row) => row.id).toList();
+
+      await tester.enterText(find.byType(TextField).first, 'missing server');
+      await tester.pumpAndSettle();
+      expect(find.text(l.prototypeNoMatchingSubscriptions), findsOneWidget);
+      expect(controller.groups(l), isEmpty);
+      await tester.tap(find.byKey(const ValueKey('server-search-reset')));
+      await tester.pumpAndSettle();
+
+      expect(controller.search.text, isEmpty);
+      expect(controller.query, isEmpty);
+      expect(find.text(l.prototypeNoMatchingSubscriptions), findsNothing);
+      expect(find.byKey(const ValueKey('server-search-clear')), findsNothing);
+      expect(controller.groups(l), isNotEmpty);
+      expect(controller.catalog.sortOrder, order);
+      expect(controller.servers.map((row) => row.id), ids);
+      expect(controller.configuration.connection.selection.toJson(), selection);
+      expect(coordinator.state.value.phase, ConnectionPhase.disconnected);
+      expect(AppEventBus.instance.state.pinging, isFalse);
       expect(tester.takeException(), isNull);
     },
   );
@@ -479,12 +529,23 @@ void main() {
   }
 
   testWidgets(
-    'latency failure uses destructive color and success clears the message',
+    'latency failure expands its original diagnostic and success clears it',
     (tester) async {
       await pumpBrowser(tester, 427, groupPage: true);
+      const diagnostic =
+          'Head "https://example.test/": context deadline exceeded\n'
+          'Original native details remain available.';
       AppEventBus.instance.updatePingResults({
-        1: const PingBatchResult(false, -1, 'Latency failed'),
+        1: const PingBatchResult(false, -1, diagnostic),
       });
+      await tester.pumpAndSettle();
+      final l = AppLocalizations.of(
+        tester.element(find.byType(ServerNodeRow).first),
+      )!;
+      expect(find.byType(SelectableText), findsNothing);
+      final summary = find.text('${l.prototypeSpeedTest} · ${l.resultFailed}');
+      expect(summary, findsOneWidget);
+      await tester.tap(summary);
       await tester.pumpAndSettle();
       final message = tester.widget<SelectableText>(
         find.descendant(
@@ -492,17 +553,101 @@ void main() {
           matching: find.byType(SelectableText),
         ),
       );
+      expect(message.data, '${l.prototypeSpeedTest}\n$diagnostic');
       final palette = ColorManager.palette(
         tester.element(find.byType(ServerNodeRow).first),
       );
       expect(message.style!.color, palette.destructive);
+      await tester.tap(summary);
+      await tester.pumpAndSettle();
+      expect(find.byType(SelectableText), findsNothing);
+      await tester.tap(summary);
+      await tester.pumpAndSettle();
+      expect(find.textContaining(diagnostic), findsOneWidget);
       AppEventBus.instance.updatePingResults({
         1: const PingBatchResult(true, 20, ''),
       });
       await tester.pumpAndSettle();
       expect(find.byType(SelectableText), findsNothing);
+      expect(summary, findsNothing);
       expect(tester.takeException(), isNull);
     },
+  );
+
+  testWidgets(
+    'short embedded group scrolls an expanded diagnostic through its last line',
+    (tester) async {
+      controller.servers = [_server(1)];
+      await pumpBrowser(
+        tester,
+        956,
+        height: 440,
+        groupPage: true,
+        groupViewport: const Size(280, 180),
+      );
+      const tail = 'Original native diagnostic ends here.';
+      final diagnostic = [
+        'Head "https://example.test/": context deadline exceeded',
+        for (var line = 0; line < 20; line++)
+          'Native connection attempt $line: destination did not respond.',
+        tail,
+      ].join('\n');
+      AppEventBus.instance.updatePingResults({
+        1: PingBatchResult(false, -1, diagnostic),
+      });
+      await tester.pumpAndSettle();
+
+      final group = find.byType(ServerGroupView);
+      final viewport = tester.getRect(group);
+      expect(viewport.size, const Size(280, 180));
+      final l = AppLocalizations.of(tester.element(group))!;
+      final summary = find.text('${l.prototypeSpeedTest} · ${l.resultFailed}');
+      for (
+        var attempt = 0;
+        attempt < 8 && summary.hitTestable().evaluate().isEmpty;
+        attempt++
+      ) {
+        await tester.dragFrom(viewport.center, const Offset(0, -80));
+        await tester.pumpAndSettle();
+      }
+      expect(summary.hitTestable(), findsOneWidget);
+      await tester.tap(summary);
+      await tester.pumpAndSettle();
+
+      final details = find.byKey(
+        const PageStorageKey('server-ping-diagnostic-1'),
+      );
+      final message = tester.widget<SelectableText>(details).data!;
+      expect(message, '${l.prototypeSpeedTest}\n$diagnostic');
+      final editable = tester.state<EditableTextState>(
+        find.descendant(of: details, matching: find.byType(EditableText)),
+      );
+      Rect tailRect() {
+        final render = editable.renderEditable;
+        final local = render.getLocalRectForCaret(
+          TextPosition(offset: message.indexOf(tail)),
+        );
+        return local.shift(render.localToGlobal(Offset.zero));
+      }
+
+      expect(viewport.contains(tailRect().center), isFalse);
+      final listState = tester.state<ScrollableState>(
+        find.descendant(of: group, matching: find.byType(Scrollable)).first,
+      );
+      final offsetBefore = listState.position.pixels;
+      for (
+        var attempt = 0;
+        attempt < 30 && !viewport.contains(tailRect().center);
+        attempt++
+      ) {
+        await tester.dragFrom(viewport.center, const Offset(0, -100));
+        await tester.pumpAndSettle();
+      }
+      expect(listState.position.pixels, greaterThan(offsetBefore));
+      expect(viewport.contains(tailRect().center), isTrue);
+      expect(tester.takeException(), isNull);
+    },
+    variant: TargetPlatformVariant({TargetPlatform.iOS}),
   );
 
   for (final (locale, width) in const [

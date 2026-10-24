@@ -315,10 +315,10 @@ class RoutingSettingRow extends StatelessWidget {
               children: [
                 Icon(icon, size: mobile ? 20 : 22, color: foreground),
                 const SizedBox(width: 13),
-                Expanded(child: copy),
+                Expanded(flex: navigation ? 2 : 1, child: copy),
                 if (!mobile && value != null) ...[
                   const SizedBox(width: 13),
-                  Flexible(
+                  Expanded(
                     child: Text(
                       value!,
                       maxLines: 1,
@@ -372,6 +372,10 @@ class EntryCountPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final palette = ColorManager.palette(context);
+    final extent = AppLayout.touchExtent(
+      34,
+      platform: Theme.of(context).platform,
+    );
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -391,7 +395,7 @@ class EntryCountPicker extends StatelessWidget {
                 message: l.prototypeUseEntryServers(count),
                 excludeFromSemantics: true,
                 child: SizedBox(
-                  width: 34,
+                  width: extent,
                   child: Material(
                     color: value == count
                         ? palette.selectedSurface
@@ -399,9 +403,19 @@ class EntryCountPicker extends StatelessWidget {
                     child: InkWell(
                       onTap: onChanged == null ? null : () => onChanged!(count),
                       child: Container(
-                        constraints: const BoxConstraints(minHeight: 34),
+                        constraints: BoxConstraints(minHeight: extent),
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         foregroundDecoration: BoxDecoration(
+                          borderRadius: value == count
+                              ? BorderRadiusDirectional.horizontal(
+                                  start: Radius.circular(
+                                    count == 1 ? AppRadii.control - 1 : 0,
+                                  ),
+                                  end: Radius.circular(
+                                    count == 3 ? AppRadii.control - 1 : 0,
+                                  ),
+                                )
+                              : null,
                           border: value == count
                               ? Border.all(color: palette.primary)
                               : count < 3
