@@ -1,0 +1,105 @@
+#
+# Debug helper for mod commits: runs the Validate steps but prints analyzer
+# and test failures into the step summary and annotations so they are
+# readable without repository admin log access.
+#
+name: Mod debug
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: mod-debug
+  cancel-in-progress: true
+
+jobs:
+  debug:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+          check-latest: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.0
+        with:
+          version: "0.x"
+          enable-cache: false
+
+      - name: Test build scripts
+        working-directory: build_scripts
+        run: uv run python -m unittest discover -s tests -p 'test_*.py'
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter
+
+      - name: Install native build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang pkg-config libgtk-3-dev libx11-dev libxi-dev
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Prepare generated asset paths
+        run: |
+          mkdir -p assets/dat
+          touch assets/dat/{geoip.dat,geoip.json,geosite.dat,geosite.json,timestamp.txt}
+
+      - name: Generate sources
+        run: |
+          flutter gen-l10n
+          dart run build_runner build
+          dart run tool/ffigen.dart
+
+      - name: Check format
+        run: |
+          find lib test tool -name '*.dart' \
+            ! -name '*.g.dart' \
+            ! -path 'lib/gen/*' \
+            ! -path 'lib/l10n/*' \
+            ! -path 'lib/core/pigeon/messages.g.dart' \
+            ! -path 'lib/core/ffi/generated_bindings.dart' \
+            -print0 | xargs -0 dart format --output=none --set-exit-if-changed
+
+      - name: Verify layer dependencies
+        run: dart run tool/check_layer_dependencies.dart
+
+      - name: Analyze
+        run: |
+          set +e
+          flutter analyze 2>&1 | tee analyze.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            {
+              echo '## Analyzer output'
+              echo '```'
+              cat analyze.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            grep -E '^\s*(error|warning)' analyze.log | while IFS= read -r line; do
+              echo "::error::$(echo "$line" | sed 's/ • /|/;s/ • /: /')"
+            done || true
+            exit "$status"
+          fi
+
+      - name: Test
+        if: always()
+        run: |
+          set +e
+          flutter test 2>&1 | tee test.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            {
+              echo '## Test output (tail)'
+              echo '```'
+              tail -n 120 test.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit "$status"
+          fi
