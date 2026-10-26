@@ -1,0 +1,28 @@
+{
+  "fill" : {
+    "solid" : "extended-srgb:0.23922,0.54902,0.94510,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "image-name" : "cloud-sun.svg",
+          "name" : "cloud-sun"
+        }
+      ],
+      "position" : {
+        "scale" : 1,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
