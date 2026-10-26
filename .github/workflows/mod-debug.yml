@@ -105,5 +105,8 @@ jobs:
               tail -n 120 test.log
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
+            grep -E '\[E\]' test.log | head -20 | while IFS= read -r line; do
+              echo "::error::$(echo "$line" | cut -c1-160)"
+            done || true
             exit "$status"
           fi

@@ -29,9 +29,11 @@ class _ModActivationGateState extends State<ModActivationGate> {
         : Future.value(true);
   }
 
-  void _onActivationSubmitted() => setState(() {
-    _activated = Future.value(true);
-  });
+  Future<void> _onActivationSubmitted() async {
+    setState(() {
+      _activated = Future.value(true);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

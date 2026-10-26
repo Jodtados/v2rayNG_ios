@@ -49,6 +49,7 @@ jobs:
         with:
           go-version: stable
           check-latest: true
+          cache-dependency-path: libXray/go.mod
 
       - uses: actions/setup-python@v7
         with:
@@ -67,18 +68,42 @@ jobs:
       - name: Prepare project and build libXray core
         # Same sequence as app/flutter.py build() for iOS, stopping before
         # the signed fastlane step (AppleBuilder.build_app).
-        run: uv run --project build_scripts python build_scripts/prepare_unsigned_ios.py
+        run: |
+          set -o pipefail
+          uv run --project build_scripts python build_scripts/prepare_unsigned_ios.py 2>&1 | tee prepare.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            tail -n 120 prepare.log >> "$GITHUB_STEP_SUMMARY" || true
+            grep -Ei 'error|failed|fatal' prepare.log | head -15 | while IFS= read -r line; do
+              echo "::error::$(echo "$line" | cut -c1-160)"
+            done || true
+            exit "$status"
+          fi
 
       - name: Build unsigned IPA
         env:
           MOD_TOTP_SECRET: ${{ secrets.MOD_TOTP_SECRET }}
         # The activation gate only arms when the secret is provided.
         run: |
+          set -o pipefail
           args=()
           if [ -n "$MOD_TOTP_SECRET" ]; then
             args+=(--dart-define=MOD_TOTP_SECRET="$MOD_TOTP_SECRET")
           fi
-          flutter build ipa --no-codesign --release "${args[@]}"
+          flutter build ipa --no-codesign --release "${args[@]}" 2>&1 | tee build.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            {
+              echo '## Build output (tail)'
+              echo '```'
+              tail -n 150 build.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            grep -Ei 'error:|fatal|failed' build.log | head -15 | while IFS= read -r line; do
+              echo "::error::$(echo "$line" | cut -c1-160)"
+            done || true
+            exit "$status"
+          fi
 
       - name: Pack archive into unsigned IPA
         working-directory: .

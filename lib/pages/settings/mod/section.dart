@@ -138,7 +138,7 @@ class ModSettingsSection extends StatelessWidget {
             child: Text(l10n.prototypeSave),
           ),
         ],
-        content: TextField(
+        child: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
@@ -178,7 +178,7 @@ class ModSettingsSection extends StatelessWidget {
             child: Text(l10n.prototypeSave),
           ),
         ],
-        content: TextField(
+        child: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
