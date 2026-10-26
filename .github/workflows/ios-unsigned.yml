@@ -136,7 +136,7 @@ jobs:
           cp build.log logs/ios-build-${{ github.run_number }}.log 2>/dev/null || true
           git add -f logs
           git commit -m "ci logs for run ${{ github.run_number }}" || true
-          git push origin ci-logs
+          git push origin ci-logs || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
