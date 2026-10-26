@@ -8,6 +8,7 @@ import 'package:onexray/pages/settings/widgets.dart';
 import 'package:onexray/pages/settings/app_icon/page.dart';
 import 'package:onexray/pages/settings/desktop/controller.dart';
 import 'package:onexray/pages/settings/language/page.dart';
+import 'package:onexray/pages/settings/mod/section.dart';
 import 'package:onexray/pages/shared/widgets/page_app_bar.dart';
 import 'package:onexray/pages/theme/color.dart';
 import 'package:onexray/pages/theme/font.dart';
@@ -177,6 +178,10 @@ class SettingsPage extends StatelessWidget {
                       ),
                   ],
                 );
+                final mod = ModSettingsSection(
+                  rowHeight: rowHeight,
+                  rowPadding: rowPadding,
+                );
                 final data = SettingSection(
                   title: l10n.prototypeData,
                   icon: LucideIcons.hardDrive,
@@ -308,6 +313,8 @@ class SettingsPage extends StatelessWidget {
                                     Expanded(
                                       child: Column(
                                         children: [
+                                          mod,
+                                          SizedBox(height: sectionGap),
                                           data,
                                           SizedBox(height: sectionGap),
                                           about,
@@ -323,6 +330,8 @@ class SettingsPage extends StatelessWidget {
                                     language,
                                     SizedBox(height: sectionGap),
                                     startup,
+                                    SizedBox(height: sectionGap),
+                                    mod,
                                     SizedBox(height: sectionGap),
                                     data,
                                     SizedBox(height: sectionGap),

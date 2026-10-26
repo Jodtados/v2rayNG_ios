@@ -965,5 +965,37 @@
   "jsonEditorDiscardChanges": "Отменить изменения",
   "tunnelDnsIpv4Invalid": "Введите корректный адрес IPv4.",
   "tunnelDnsIpv6Invalid": "Введите корректный адрес IPv6.",
-  "tunnelDnsServerNameRequired": "Введите имя сервера DNS over TLS."
+  "tunnelDnsServerNameRequired": "Введите имя сервера DNS over TLS.",
+  "modActivationTitle": "Активация",
+  "modActivationDescription": "Введите одноразовый код активации, чтобы настроить приложение.",
+  "modActivationCode": "Код активации",
+  "modActivationSubmit": "Активировать",
+  "modActivationInvalid": "Неверный код. Попробуйте ещё раз.",
+  "modActivationLocked": "Слишком много попыток. Повторите через {seconds} с.",
+  "@modActivationLocked": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "modSettingsTitle": "Лимиты",
+  "modTrafficLimit": "Лимит трафика",
+  "modTrafficLimitOff": "Выключен",
+  "modTrafficLimitField": "Лимит, МБ (0 — выкл.)",
+  "modTrafficUsed": "Использовано",
+  "modTrafficUsedOf": "{used} из {total}",
+  "modTrafficReset": "Сбросить счётчик",
+  "modTrafficExhaustedTitle": "Трафик исчерпан",
+  "modTrafficExhaustedDescription": "Достигнут лимит трафика {total} (использовано {used}). Сбросьте счётчик, чтобы продолжить.",
+  "@modTrafficUsedOf": {
+    "placeholders": {
+      "used": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "@modTrafficExhaustedDescription": {
+    "placeholders": {
+      "used": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  }
 }

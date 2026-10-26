@@ -965,5 +965,37 @@
   "jsonEditorDiscardChanges": "放弃更改",
   "tunnelDnsIpv4Invalid": "请输入有效的 IPv4 地址。",
   "tunnelDnsIpv6Invalid": "请输入有效的 IPv6 地址。",
-  "tunnelDnsServerNameRequired": "请输入 DNS over TLS 服务器名称。"
+  "tunnelDnsServerNameRequired": "请输入 DNS over TLS 服务器名称。",
+  "modActivationTitle": "激活",
+  "modActivationDescription": "输入一次性激活码以完成设置。",
+  "modActivationCode": "激活码",
+  "modActivationSubmit": "激活",
+  "modActivationInvalid": "无效的代码，请重试。",
+  "modActivationLocked": "尝试次数过多，请在 {seconds} 秒后重试。",
+  "@modActivationLocked": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "modSettingsTitle": "限额",
+  "modTrafficLimit": "流量限制",
+  "modTrafficLimitOff": "关闭",
+  "modTrafficLimitField": "限制，MB（0 = 关闭）",
+  "modTrafficUsed": "已用流量",
+  "modTrafficUsedOf": "{used} / {total}",
+  "modTrafficReset": "重置计数",
+  "modTrafficExhaustedTitle": "流量已用尽",
+  "modTrafficExhaustedDescription": "已达到流量限制 {total}（已用 {used}）。重置计数以继续。",
+  "@modTrafficUsedOf": {
+    "placeholders": {
+      "used": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "@modTrafficExhaustedDescription": {
+    "placeholders": {
+      "used": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  }
 }

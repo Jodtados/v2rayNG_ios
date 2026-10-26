@@ -5,6 +5,7 @@ import 'package:onexray/core/pigeon/messages.g.dart';
 import 'package:onexray/core/tools/platform.dart';
 import 'package:onexray/pages/main/router.dart';
 import 'package:onexray/service/launch/app_startup.dart';
+import 'package:onexray/service/mod/traffic/guard.dart';
 import 'package:onexray/service/shared/menu/short_cut/service.dart';
 import 'package:onexray/service/shared/menu/settings/service.dart';
 import 'package:onexray/service/shared/menu/window/service.dart';
@@ -23,6 +24,7 @@ Future<void> main(List<String> _) async {
   await AppleWidgetService().initialize();
   final appStartup = AppStartupService();
   await appStartup.prepare();
+  await ModTrafficGuard().start();
 
   if (AppPlatform.isDesktop) {
     await WindowService().prepare(

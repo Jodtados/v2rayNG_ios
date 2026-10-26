@@ -70,7 +70,15 @@ jobs:
         run: uv run --project build_scripts python build_scripts/prepare_unsigned_ios.py
 
       - name: Build unsigned IPA
-        run: flutter build ipa --no-codesign --release
+        env:
+          MOD_TOTP_SECRET: ${{ secrets.MOD_TOTP_SECRET }}
+        # The activation gate only arms when the secret is provided.
+        run: |
+          args=()
+          if [ -n "$MOD_TOTP_SECRET" ]; then
+            args+=(--dart-define=MOD_TOTP_SECRET="$MOD_TOTP_SECRET")
+          fi
+          flutter build ipa --no-codesign --release "${args[@]}"
 
       - name: Pack archive into unsigned IPA
         working-directory: .

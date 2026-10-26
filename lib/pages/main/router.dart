@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onexray/l10n/localizations/app_localizations.dart';
 import 'package:onexray/pages/main/url.dart';
 import 'package:onexray/pages/main/desktop_window.dart';
+import 'package:onexray/pages/mod/activation/gate.dart';
+import 'package:onexray/pages/mod/traffic/gate.dart';
 import 'package:onexray/pages/theme/theme.dart';
 import 'package:onexray/pages/theme/layout.dart';
 import 'package:onexray/service/shared/event_bus/service.dart';
@@ -59,7 +61,13 @@ class GoRouteApp extends StatelessWidget {
                 mobile: mobile,
                 textScaler: MediaQuery.textScalerOf(context),
               ),
-              child: ShadToaster(child: DesktopWindowFrame(child: routedChild)),
+              child: ShadToaster(
+                child: ModActivationGate(
+                  child: ModTrafficGate(
+                    child: DesktopWindowFrame(child: routedChild),
+                  ),
+                ),
+              ),
             );
           },
         );

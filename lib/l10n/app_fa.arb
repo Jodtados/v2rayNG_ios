@@ -965,5 +965,37 @@
   "jsonEditorDiscardChanges": "کنار گذاشتن تغییرات",
   "tunnelDnsIpv4Invalid": "یک نشانی معتبر IPv4 وارد کنید.",
   "tunnelDnsIpv6Invalid": "یک نشانی معتبر IPv6 وارد کنید.",
-  "tunnelDnsServerNameRequired": "نام سرور DNS over TLS را وارد کنید."
+  "tunnelDnsServerNameRequired": "نام سرور DNS over TLS را وارد کنید.",
+  "modActivationTitle": "فعال‌سازی",
+  "modActivationDescription": "کد فعال‌سازی یک‌بارمصرف را وارد کنید.",
+  "modActivationCode": "کد فعال‌سازی",
+  "modActivationSubmit": "فعال‌سازی",
+  "modActivationInvalid": "کد نامعتبر است. دوباره تلاش کنید.",
+  "modActivationLocked": "تلاش‌های بیش از حد. {seconds} ثانیه دیگر تلاش کنید.",
+  "@modActivationLocked": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "modSettingsTitle": "محدودیت‌ها",
+  "modTrafficLimit": "محدودیت ترافیک",
+  "modTrafficLimitOff": "خاموش",
+  "modTrafficLimitField": "محدودیت به مگابایت (۰ = خاموش)",
+  "modTrafficUsed": "ترافیک مصرف‌شده",
+  "modTrafficUsedOf": "{used} از {total}",
+  "modTrafficReset": "بازنشانی شمارنده",
+  "modTrafficExhaustedTitle": "ترافیک تمام شد",
+  "modTrafficExhaustedDescription": "محدودیت {total} پر شده است ({used} مصرف شده). برای ادامه شمارنده را بازنشانی کنید.",
+  "@modTrafficUsedOf": {
+    "placeholders": {
+      "used": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "@modTrafficExhaustedDescription": {
+    "placeholders": {
+      "used": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  }
 }
