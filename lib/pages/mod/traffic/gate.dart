@@ -24,11 +24,11 @@ class ModTrafficGate extends StatelessWidget {
         if (limitMb <= 0) return child;
         return ValueListenableBuilder<bool>(
           valueListenable: settings.trafficExhausted,
-          builder: (context, exhausted, __) {
+          builder: (context, exhausted, _) {
             if (!exhausted) return child;
             return ValueListenableBuilder<int>(
               valueListenable: settings.trafficUsedBytes,
-              builder: (context, usedBytes, ___) => ModTrafficBlockPage(
+              builder: (context, usedBytes, _) => ModTrafficBlockPage(
                 usedBytes: usedBytes,
                 limitBytes: settings.trafficLimitBytes,
               ),

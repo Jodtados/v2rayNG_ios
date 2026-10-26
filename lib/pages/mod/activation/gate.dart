@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' show FutureBuilder;
 import 'package:material_ui/material_ui.dart';
 
 import 'package:onexray/pages/mod/activation/page.dart';

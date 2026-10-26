@@ -71,7 +71,7 @@ void main() {
       ]);
       expect(
         sample.observations.every(
-          (value) => value.path.finalExitName == 'Final exit',
+          (value) => value.path.finalExitName == 'Fi*** exit',
         ),
         true,
       );
@@ -174,7 +174,7 @@ void main() {
         'app-exit-2',
       ]);
       expect(restored.observationPaths[1].entryName, 'Entry 1');
-      expect(restored.observationPaths[1].finalExitName, 'Final exit');
+      expect(restored.observationPaths[1].finalExitName, 'Fi*** exit');
       expect(
         identical(restored.observationPaths, restored.observationPaths),
         true,

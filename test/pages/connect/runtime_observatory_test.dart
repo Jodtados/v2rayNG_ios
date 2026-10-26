@@ -119,8 +119,8 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.text('Entry 0 → Final exit'), findsOneWidget);
-        expect(find.text('Entry 1 → Final exit'), findsOneWidget);
+        expect(find.text('Entry 0 → Fi*** exit'), findsOneWidget);
+        expect(find.text('Entry 1 → Fi*** exit'), findsOneWidget);
         expect(
           find.byKey(const ValueKey('runtime-path-app-exit-0')),
           findsOneWidget,

@@ -147,7 +147,7 @@ void main() {
       );
       controller.sources = await db.subscriptionDao.allRows;
       controller.servers = [];
-      expect(controller.selectionTitle(l), 'Provider profile');
+      expect(controller.selectionTitle(l), 'Pr***ofile');
       expect(controller.providerConfiguration, isTrue);
       expect(controller.runningRoute, isNull);
       await tester.tap(find.text('why'));
@@ -460,7 +460,7 @@ void main() {
       }
       expect(
         controller.selectionDetail(l),
-        'Singapore 03 + Japan 02 → United States 01',
+        'Si***re 03 + Ja***an 02→ Un***es 01',
       );
       controller.servers = controller.servers.sublist(1);
       expect(controller.selectionHealth(l), isNull);
@@ -682,7 +682,7 @@ void main() {
     ];
     expect(controller.runningRoute, (
       entryCount: 2,
-      path: 'Singapore 03 + Japan 02 → United States 01',
+      path: 'Si***re 03 + Ja***an 02→ Un***es 01',
     ));
     coordinator.state.value = ConnectionView(
       phase: ConnectionPhase.disconnected,

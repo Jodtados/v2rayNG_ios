@@ -188,7 +188,7 @@ void main() {
       expect(metadata['profile'], {
         'id': 99,
         'sourceId': 7,
-        'name': 'Provider profile',
+        'name': 'Pr***ofile',
         'type': 'Remnawave',
       });
       expect(runtime.entries, isEmpty);
@@ -196,7 +196,7 @@ void main() {
       final parsed = ConnectionRuntime.fromRequest(runtime.request);
       expect(parsed.profile!.id, 99);
       expect(parsed.profile!.sourceId, 7);
-      expect(parsed.profile!.name, 'Provider profile');
+      expect(parsed.profile!.name, 'Pr***ofile');
       expect(parsed.profile!.type, 'Remnawave');
       expect(parsed.nodeIds, {99});
       expect(parsed.xrayJson, xrayJson);
@@ -208,7 +208,7 @@ void main() {
           .readRuntime();
       expect(restored!.profile!.id, 99);
       expect(restored.profile!.sourceId, 7);
-      expect(restored.profile!.name, 'Provider profile');
+      expect(restored.profile!.name, 'Pr***ofile');
       expect(restored.profile!.type, 'Remnawave');
       expect(restored.nodeIds, {99});
     },

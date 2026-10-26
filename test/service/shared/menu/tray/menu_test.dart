@@ -175,8 +175,7 @@ void main() {
       runningProfile: runtime.profile,
     );
     expect(
-      _descendants(hidden)
-          .any((item) => item.label.contains('Provider profile')),
+      _descendants(hidden).any((item) => item.label.contains('Pr***ofile')),
       isTrue,
     );
     expect(_item(hidden, 'traffic:allVpn').disabled, isTrue);
