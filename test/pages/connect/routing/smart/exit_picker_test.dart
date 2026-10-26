@@ -108,8 +108,8 @@ void main() {
         controller.servers.singleWhere((row) => row.id == 3),
       );
       expect(controller.selectedId, 3);
-      controller.search.text = 'Server 3';
-      expect(controller.search.text, 'Server 3');
+      controller.search.text = 'Se***ver 3';
+      expect(controller.search.text, 'Se***ver 3');
       expect(controller.selectionGroups(l).single.visibleRows.single.id, 3);
       expect(
         controller.exitRowDetail(
@@ -176,7 +176,7 @@ void main() {
     expect(find.text('VLESS | XHTTP | TLS'), findsNWidgets(4));
     expect(find.text('outbound'), findsNWidgets(4));
     expect(find.text(l.countryRegionName('SG')), findsNothing);
-    await tester.tap(find.text('Server 3'));
+    await tester.tap(find.text('Se***ver 3'));
     await tester.pumpAndSettle();
     expect(controller.selectedId, 3);
     expect(results, isEmpty);

@@ -976,7 +976,7 @@ void main() {
           for (var index = 0; index < 2; index++) {
             await tester.runAsync(() async {
               await tester.tap(
-                find.byTooltip('${l.prototypeMoreActions}: Imported'),
+                find.byTooltip('${l.prototypeMoreActions}: Im***rted'),
               );
             });
             await tester.pump(const Duration(seconds: 1));

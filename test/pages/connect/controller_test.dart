@@ -460,7 +460,7 @@ void main() {
       }
       expect(
         controller.selectionDetail(l),
-        'Si***re 03 + Ja***an 02→ Un***es 01',
+        'Si***re 03 + Ja***an 02 → Un***es 01',
       );
       controller.servers = controller.servers.sublist(1);
       expect(controller.selectionHealth(l), isNull);
@@ -682,7 +682,7 @@ void main() {
     ];
     expect(controller.runningRoute, (
       entryCount: 2,
-      path: 'Si***re 03 + Ja***an 02→ Un***es 01',
+      path: 'Si***re 03 + Ja***an 02 → Un***es 01',
     ));
     coordinator.state.value = ConnectionView(
       phase: ConnectionPhase.disconnected,
