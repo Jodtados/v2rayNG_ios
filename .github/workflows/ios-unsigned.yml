@@ -1,0 +1,101 @@
+#
+# Builds an UNSIGNED OneXray iOS IPA for personal sideloading
+# (Sideloadly/AltStore/Xcode manual signing). No Apple secrets required.
+#
+# Mirrors the core build of .github/workflows/build.yml but replaces the
+# signed fastlane deploy with `flutter build ipa --no-codesign` and packs
+# the archive into an unsigned Payload IPA.
+#
+name: iOS unsigned
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ios-unsigned-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  LIBXRAY_REF: main
+  BUILD_NUMBER: ${{ github.run_number }}
+
+jobs:
+  ios-unsigned:
+    runs-on: xcode-27
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: OneXray
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: OneXray
+
+      - uses: actions/checkout@v7
+        with:
+          repository: XTLS/libXray
+          ref: ${{ env.LIBXRAY_REF }}
+          path: libXray
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version: stable
+          check-latest: true
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+          check-latest: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.0
+        with:
+          version: "0.x"
+          enable-cache: false
+
+      - name: Setup Flutter
+        uses: ./OneXray/.github/actions/setup-flutter
+
+      - name: Prepare project and build libXray core
+        # Same sequence as app/flutter.py build() for iOS, stopping before
+        # the signed fastlane step (AppleBuilder.build_app).
+        run: |
+          uv run --project build_scripts python - <<'PY'
+          from app.apple import AppleBuilder
+          from app.command_line import run_command
+
+          builder = AppleBuilder("OneXray", "ios", "build_scripts")
+          marketing_version = builder.read_version().split("+", maxsplit=1)[0]
+          builder.write_version(f"{marketing_version}+{builder.build_number}")
+          run_command(["flutter", "pub", "get"], cwd=builder.root_dir)
+          builder.before_build()
+          run_command(["dart", "run", "tool/ffigen.dart"], cwd=builder.root_dir)
+          PY
+
+      - name: Build unsigned IPA
+        run: flutter build ipa --no-codesign --release
+
+      - name: Pack archive into unsigned IPA
+        working-directory: .
+        run: |
+          mkdir -p output/Payload
+          cp -R OneXray/build/ios/archive/Runner.xcarchive/Products/Applications/*.app output/Payload/
+          cd output
+          zip -qry OneXray-ios-unsigned.ipa Payload
+          cd ..
+          ls -lh output
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: onexray-ios-unsigned
+          path: output/OneXray-ios-unsigned.ipa
+          if-no-files-found: error
