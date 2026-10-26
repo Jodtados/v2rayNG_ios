@@ -20,7 +20,8 @@ import UIKit
         BackupHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: backupApi)
         AppleBackupHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: backupApi)
         AppleWidgetHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: AppleWidgetApi(flutterApi: flutterApi))
-        
+        ModActivationChannel().register(on: binaryMessenger)
+
         GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     }
 }
