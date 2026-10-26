@@ -86,8 +86,11 @@ jobs:
               cat analyze.log
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
-            grep -E '^\s*(error|warning)' analyze.log | while IFS= read -r line; do
+            grep -E '^\s*(error|warning|info)' analyze.log | head -10 | while IFS= read -r line; do
               echo "::error::$(echo "$line" | sed 's/ • /|/;s/ • /: /')"
+            done || true
+            tail -n 5 analyze.log | while IFS= read -r line; do
+              echo "::error::$(echo "$line" | cut -c1-200)"
             done || true
             exit "$status"
           fi
@@ -96,7 +99,7 @@ jobs:
         if: always()
         run: |
           set +e
-          flutter test 2>&1 | tee test.log
+          flutter test --reporter expanded 2>&1 | tee test.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
             {
@@ -105,7 +108,7 @@ jobs:
               tail -n 120 test.log
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
-            grep -E '\[E\]' test.log | head -20 | while IFS= read -r line; do
+            grep -E '\[E\]' test.log | head -10 | while IFS= read -r line; do
               echo "::error::$(echo "$line" | cut -c1-160)"
             done || true
             exit "$status"

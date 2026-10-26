@@ -74,8 +74,11 @@ jobs:
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
             tail -n 120 prepare.log >> "$GITHUB_STEP_SUMMARY" || true
-            grep -Ei 'error|failed|fatal' prepare.log | head -15 | while IFS= read -r line; do
+            grep -Ei 'error|failed|fatal|exception|traceback' prepare.log | head -10 | while IFS= read -r line; do
               echo "::error::$(echo "$line" | cut -c1-160)"
+            done || true
+            tail -n 10 prepare.log | while IFS= read -r line; do
+              echo "::error::$(echo "$line" | cut -c1-200)"
             done || true
             exit "$status"
           fi
@@ -99,8 +102,11 @@ jobs:
               tail -n 150 build.log
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
-            grep -Ei 'error:|fatal|failed' build.log | head -15 | while IFS= read -r line; do
+            grep -Ei 'error|fatal|failed|exception' build.log | head -10 | while IFS= read -r line; do
               echo "::error::$(echo "$line" | cut -c1-160)"
+            done || true
+            tail -n 10 build.log | while IFS= read -r line; do
+              echo "::error::$(echo "$line" | cut -c1-200)"
             done || true
             exit "$status"
           fi
