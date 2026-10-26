@@ -134,7 +134,7 @@ jobs:
           mkdir -p logs
           cp prepare.log logs/ios-prepare-${{ github.run_number }}.log 2>/dev/null || true
           cp build.log logs/ios-build-${{ github.run_number }}.log 2>/dev/null || true
-          git add logs
+          git add -f logs
           git commit -m "ci logs for run ${{ github.run_number }}" || true
           git push origin ci-logs
 

@@ -126,6 +126,6 @@ jobs:
           mkdir -p logs
           cp analyze.log logs/debug-analyze-${{ github.run_number }}.log 2>/dev/null || true
           cp test.log logs/debug-test-${{ github.run_number }}.log 2>/dev/null || true
-          git add logs
+          git add -f logs
           git commit -m "ci logs for run ${{ github.run_number }}" || true
           git push origin ci-logs
