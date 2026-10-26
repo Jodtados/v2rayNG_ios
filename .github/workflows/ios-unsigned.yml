@@ -67,18 +67,7 @@ jobs:
       - name: Prepare project and build libXray core
         # Same sequence as app/flutter.py build() for iOS, stopping before
         # the signed fastlane step (AppleBuilder.build_app).
-        run: |
-          uv run --project build_scripts python - <<'PY'
-          from app.apple import AppleBuilder
-          from app.command_line import run_command
-
-          builder = AppleBuilder("OneXray", "ios", "build_scripts")
-          marketing_version = builder.read_version().split("+", maxsplit=1)[0]
-          builder.write_version(f"{marketing_version}+{builder.build_number}")
-          run_command(["flutter", "pub", "get"], cwd=builder.root_dir)
-          builder.before_build()
-          run_command(["dart", "run", "tool/ffigen.dart"], cwd=builder.root_dir)
-          PY
+        run: uv run --project build_scripts python build_scripts/prepare_unsigned_ios.py
 
       - name: Build unsigned IPA
         run: flutter build ipa --no-codesign --release
