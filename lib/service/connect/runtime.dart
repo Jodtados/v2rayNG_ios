@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:onexray/core/pigeon/model.dart';
 import 'package:onexray/core/db/database/enum.dart';
+import 'package:onexray/core/tools/display_mask.dart';
 import 'package:onexray/service/connect/compiler.dart';
 import 'package:onexray/service/advanced/platform_policy.dart';
 import 'package:onexray/service/connect/settings.dart';
@@ -42,7 +43,7 @@ class RuntimeNode {
   const RuntimeNode({required this.id, required this.name});
 
   factory RuntimeNode.fromServer(ResolvedServer server) =>
-      RuntimeNode(id: server.id, name: server.name);
+      RuntimeNode(id: server.id, name: maskDisplayName(server.name));
 
   factory RuntimeNode.fromJson(Map<String, dynamic> json) {
     final id = json['id'];
@@ -72,7 +73,7 @@ class RuntimeProfile {
   factory RuntimeProfile.fromProfile(ResolvedProfile profile) => RuntimeProfile(
     id: profile.id,
     sourceId: profile.sourceId,
-    name: profile.name,
+    name: maskDisplayName(profile.name),
     type: profile.type,
   );
 

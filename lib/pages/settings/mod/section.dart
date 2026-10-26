@@ -79,8 +79,80 @@ class ModSettingsSection extends StatelessWidget {
             onTap: () => settings.resetTrafficUsage(),
           ),
         ),
+        ValueListenableBuilder<bool>(
+          valueListenable: settings.rotationEnabled,
+          builder: (context, enabled, _) => Column(
+            children: [
+              SettingRow(
+                title: l10n.modRotation,
+                value: enabled ? null : l10n.modTrafficLimitOff,
+                minHeight: rowHeight,
+                contentPadding: rowPadding,
+                titleStyle: AppTypography.settingsRow,
+                onTap: () => settings.setRotationEnabled(!enabled),
+                trailing: ShadSwitch(
+                  value: enabled,
+                  width: 40,
+                  height: 23,
+                  onChanged: (value) => settings.setRotationEnabled(value),
+                ),
+              ),
+              if (enabled)
+                ValueListenableBuilder<int>(
+                  valueListenable: settings.rotationMinutes,
+                  builder: (context, minutes, _) => SettingRow(
+                    title: l10n.modRotationInterval,
+                    value: l10n.modRotationMinutes(minutes),
+                    minHeight: rowHeight,
+                    contentPadding: rowPadding,
+                    titleStyle: AppTypography.settingsRow,
+                    showChevron: true,
+                    onTap: () => _editRotation(context, settings, minutes),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ],
     );
+  }
+
+  Future<void> _editRotation(
+    BuildContext context,
+    ModSettingsService settings,
+    int currentMinutes,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController(text: '$currentMinutes');
+    final submitted = await showShadDialog<bool>(
+      context: context,
+      builder: (dialogContext) => ShadDialog(
+        title: Text(l10n.modRotationInterval),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.prototypeCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.prototypeSave),
+          ),
+        ],
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: l10n.modRotationField,
+            hintText: '${ModSettingsService.defaultRotationMinutes}',
+          ),
+        ),
+      ),
+    );
+    if (submitted != true) return;
+    final value = int.tryParse(controller.text.trim());
+    if (value != null) {
+      await settings.setRotationMinutes(value);
+    }
   }
 
   Future<void> _editLimit(

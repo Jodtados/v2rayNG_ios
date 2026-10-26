@@ -12,6 +12,10 @@ final class ModSettingsService {
   static const String _limitMbKey = 'mod.traffic.limitMb';
   static const String _usedBytesKey = 'mod.traffic.usedBytes';
   static const String _exhaustedKey = 'mod.traffic.exhausted';
+  static const String _rotationEnabledKey = 'mod.rotation.enabled';
+  static const String _rotationMinutesKey = 'mod.rotation.minutes';
+
+  static const int defaultRotationMinutes = 30;
 
   static const int megabyte = 1024 * 1024;
 
@@ -31,6 +35,8 @@ final class ModSettingsService {
   final trafficLimitMb = ValueNotifier<int>(0);
   final trafficUsedBytes = ValueNotifier<int>(0);
   final trafficExhausted = ValueNotifier<bool>(false);
+  final rotationEnabled = ValueNotifier<bool>(false);
+  final rotationMinutes = ValueNotifier<int>(defaultRotationMinutes);
 
   /// Total bytes allowed by the limit; 0 means unlimited.
   int get trafficLimitBytes => trafficLimitMb.value * megabyte;
@@ -42,6 +48,9 @@ final class ModSettingsService {
     trafficLimitMb.value = preferences.getInt(_limitMbKey) ?? 0;
     trafficUsedBytes.value = preferences.getInt(_usedBytesKey) ?? 0;
     trafficExhausted.value = preferences.getBool(_exhaustedKey) ?? false;
+    rotationEnabled.value = preferences.getBool(_rotationEnabledKey) ?? false;
+    rotationMinutes.value =
+        preferences.getInt(_rotationMinutesKey) ?? defaultRotationMinutes;
   }
 
   Future<void> setTrafficLimitMb(int value) async {
@@ -69,6 +78,19 @@ final class ModSettingsService {
     final preferences = await _preferences();
     await preferences.setInt(_usedBytesKey, 0);
     await preferences.setBool(_exhaustedKey, false);
+  }
+
+  Future<void> setRotationEnabled(bool value) async {
+    rotationEnabled.value = value;
+    final preferences = await _preferences();
+    await preferences.setBool(_rotationEnabledKey, value);
+  }
+
+  Future<void> setRotationMinutes(int value) async {
+    final clamped = value < 1 ? 1 : value;
+    rotationMinutes.value = clamped;
+    final preferences = await _preferences();
+    await preferences.setInt(_rotationMinutesKey, clamped);
   }
 
   void _evaluate(int usedBytes) {

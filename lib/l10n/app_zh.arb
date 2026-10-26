@@ -997,5 +997,14 @@
       "used": {"type": "String"},
       "total": {"type": "String"}
     }
+  },
+  "modRotation": "节点轮换",
+  "modRotationInterval": "轮换间隔",
+  "modRotationField": "间隔（分钟）",
+  "modRotationMinutes": "每 {minutes} 分钟",
+  "@modRotationMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
   }
 }

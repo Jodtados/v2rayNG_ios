@@ -997,5 +997,14 @@
       "used": {"type": "String"},
       "total": {"type": "String"}
     }
+  },
+  "modRotation": "چرخش گره‌ها",
+  "modRotationInterval": "بازه چرخش",
+  "modRotationField": "بازه به دقیقه",
+  "modRotationMinutes": "هر {minutes} دقیقه",
+  "@modRotationMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
   }
 }

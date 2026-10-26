@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:onexray/core/db/database/constants.dart';
 import 'package:onexray/core/db/database/database.dart';
 import 'package:onexray/core/db/database/enum.dart';
+import 'package:onexray/core/tools/display_mask.dart';
 import 'package:onexray/service/connect/compiler.dart';
 import 'package:onexray/service/servers/outbound/map.dart';
 import 'package:onexray/service/servers/outbound/state_db.dart';
@@ -30,13 +31,18 @@ class ServerDisplay {
       }
       final outbound = readOutboundFromDbData(row);
       return ServerDisplay(
-        outboundDisplayName(outbound),
+        maskDisplayName(outboundDisplayName(outbound)),
         outboundProtocolLabel(outbound),
         row.type == 'outbound',
         type: row.type,
       );
     } on FormatException {
-      return ServerDisplay(row.name, '', false, type: row.type);
+      return ServerDisplay(
+        maskDisplayName(row.name),
+        '',
+        false,
+        type: row.type,
+      );
     }
   }
 }

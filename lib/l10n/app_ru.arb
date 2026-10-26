@@ -997,5 +997,14 @@
       "used": {"type": "String"},
       "total": {"type": "String"}
     }
+  },
+  "modRotation": "Ротация нод",
+  "modRotationInterval": "Интервал ротации",
+  "modRotationField": "Интервал, минуты",
+  "modRotationMinutes": "Каждые {minutes} мин",
+  "@modRotationMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
   }
 }

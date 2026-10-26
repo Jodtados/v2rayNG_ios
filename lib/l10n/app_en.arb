@@ -3172,5 +3172,14 @@
       "used": {"type": "String"},
       "total": {"type": "String"}
     }
+  },
+  "modRotation": "Node rotation",
+  "modRotationInterval": "Rotation interval",
+  "modRotationField": "Interval, minutes",
+  "modRotationMinutes": "Every {minutes} min",
+  "@modRotationMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
   }
 }
