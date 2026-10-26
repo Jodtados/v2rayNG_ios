@@ -20,6 +20,8 @@ jobs:
   debug:
     runs-on: ubuntu-26.04
     timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
 
@@ -113,3 +115,17 @@ jobs:
             done || true
             exit "$status"
           fi
+
+      - name: Publish failure logs
+        if: failure()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin ci-logs || true
+          git checkout -B ci-logs origin/ci-logs 2>/dev/null || git checkout -B ci-logs
+          mkdir -p logs
+          cp analyze.log logs/debug-analyze-${{ github.run_number }}.log 2>/dev/null || true
+          cp test.log logs/debug-test-${{ github.run_number }}.log 2>/dev/null || true
+          git add logs
+          git commit -m "ci logs for run ${{ github.run_number }}" || true
+          git push origin ci-logs

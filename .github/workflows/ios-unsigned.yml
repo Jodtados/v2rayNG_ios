@@ -26,6 +26,8 @@ jobs:
   ios-unsigned:
     runs-on: xcode-27
     timeout-minutes: 60
+    permissions:
+      contents: write
     defaults:
       run:
         working-directory: OneXray
@@ -120,6 +122,21 @@ jobs:
           zip -qry OneXray-ios-unsigned.ipa Payload
           cd ..
           ls -lh output
+
+      - name: Publish failure logs
+        if: failure()
+        working-directory: OneXray
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin ci-logs || true
+          git checkout -B ci-logs origin/ci-logs 2>/dev/null || git checkout -B ci-logs
+          mkdir -p logs
+          cp prepare.log logs/ios-prepare-${{ github.run_number }}.log 2>/dev/null || true
+          cp build.log logs/ios-build-${{ github.run_number }}.log 2>/dev/null || true
+          git add logs
+          git commit -m "ci logs for run ${{ github.run_number }}" || true
+          git push origin ci-logs
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
