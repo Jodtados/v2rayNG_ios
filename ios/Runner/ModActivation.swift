@@ -24,7 +24,7 @@ final class ModActivationChannel {
                 self.activate()
                 result(nil)
             default:
-                result(FlutterMethodNotImplemented)
+                result(FlutterError(code: "unimplemented", message: call.method, details: nil))
             }
         }
     }
