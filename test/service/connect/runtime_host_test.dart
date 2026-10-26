@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -22,6 +23,141 @@ void main() {
     directory = await fixtures.createTemp('runtime-host-');
     addTearDown(() => directory.delete(recursive: true));
   });
+
+  test('cancelled file preparation never submits a native start', () async {
+    final runtime = _runtime(platform: ConnectionPlatform.ios);
+    final writing = Completer<void>();
+    final release = Completer<void>();
+    final cancellation = Completer<void>();
+    final file = File(p.join(directory.path, 'start.json'));
+    var nativeStarts = 0;
+    final host = ConnectionRuntimeHost(
+      writeStartFile: (runtime) async {
+        writing.complete();
+        await release.future;
+        await file.writeAsString(jsonEncode(runtime.request.toJson()));
+      },
+      startVpn: (_) async {
+        nativeStarts++;
+        return NativeVpnCommandResult(
+          state: NativeVpnCommandState.success,
+          status: VpnStatus.connected,
+        );
+      },
+    );
+    var finished = false;
+    final rejected = expectLater(
+      host.start(runtime, cancelled: cancellation.future).whenComplete(() {
+        finished = true;
+      }),
+      throwsA(
+        isA<ConnectionHostException>().having(
+          (error) => error.reason,
+          'reason',
+          'cancelled',
+        ),
+      ),
+    );
+    await writing.future;
+    cancellation.complete();
+    await pumpEventQueue();
+    expect(
+      finished,
+      isFalse,
+      reason: 'The file write must finish before cleanup.',
+    );
+    expect(nativeStarts, 0);
+    release.complete();
+    await rejected;
+    expect(jsonDecode(await file.readAsString()), runtime.request.toJson());
+    expect(nativeStarts, 0);
+  });
+
+  for (final lateFailure in [false, true]) {
+    test(
+      'submitted native start cancels before its late ${lateFailure ? 'error' : 'success'}',
+      () async {
+        final runtime = _runtime(platform: ConnectionPlatform.ios);
+        final submitted = Completer<void>();
+        final reply = Completer<NativeVpnCommandResult>();
+        final cancellation = Completer<void>();
+        final host = ConnectionRuntimeHost(
+          writeStartFile: (runtime) async {
+            await File(p.join(directory.path, 'start.json'))
+                .writeAsString(jsonEncode(runtime.request.toJson()));
+          },
+          startVpn: (_) {
+            submitted.complete();
+            return reply.future;
+          },
+        );
+        final rejected = expectLater(
+          host.start(runtime, cancelled: cancellation.future),
+          throwsA(
+            isA<ConnectionHostException>().having(
+              (error) => error.reason,
+              'reason',
+              'cancelled',
+            ),
+          ),
+        );
+        await submitted.future;
+        cancellation.complete();
+        await rejected;
+        expect(reply.isCompleted, isFalse);
+        if (lateFailure) {
+          reply.completeError(
+            const ConnectionHostException('lateStartFailure'),
+          );
+        } else {
+          reply.complete(
+            NativeVpnCommandResult(
+              state: NativeVpnCommandState.success,
+              status: VpnStatus.connected,
+            ),
+          );
+        }
+        await pumpEventQueue();
+      },
+    );
+  }
+
+  for (final platform in [
+    ConnectionPlatform.android,
+    ConnectionPlatform.windows,
+    ConnectionPlatform.linux,
+  ]) {
+    test(
+      '${platform.name} retains the submitted command wait on cancellation',
+      () async {
+        final runtime = _runtime(platform: platform);
+        final submitted = Completer<void>();
+        final reply = Completer<NativeVpnCommandResult>();
+        final cancellation = Completer<void>();
+        final host = ConnectionRuntimeHost(
+          startVpn: (_) {
+            submitted.complete();
+            return reply.future;
+          },
+        );
+        var finished = false;
+        final starting = host
+            .start(runtime, cancelled: cancellation.future)
+            .whenComplete(() => finished = true);
+        await submitted.future;
+        cancellation.complete();
+        await pumpEventQueue();
+        expect(finished, isFalse);
+        reply.complete(
+          NativeVpnCommandResult(
+            state: NativeVpnCommandState.success,
+            status: VpnStatus.connected,
+          ),
+        );
+        expect((await starting).status, VpnStatus.connected);
+      },
+    );
+  }
 
   test('start.json is the only persisted runtime descriptor', () async {
     final runtime = _runtime();
@@ -432,6 +568,7 @@ ConnectionRuntime _runtime({
   ResolvedProfile? profile,
   List<ResolvedServer>? entries,
   String xrayJson = '{"outbounds":[]}',
+  ConnectionPlatform platform = ConnectionPlatform.android,
 }) {
   final configuration = ConnectionConfiguration();
   final server = ResolvedServer(
@@ -453,7 +590,7 @@ ConnectionRuntime _runtime({
   return ConnectionRuntime.create(
     configuration: configuration,
     compiled: compiled,
-    platform: ConnectionPlatform.android,
+    platform: platform,
     request: StartVpnRequest(null, null, '18003', jsonEncode(invoke.toJson())),
   );
 }
