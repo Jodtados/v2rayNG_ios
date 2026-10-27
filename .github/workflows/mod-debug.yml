@@ -63,6 +63,12 @@ jobs:
           dart run build_runner build
           dart run tool/ffigen.dart
 
+      - name: Capture generated diff
+        if: always()
+        run: |
+          git status --porcelain | tee gen-status.log
+          git diff | tee gen-diff.log || true
+
       - name: Check format
         run: |
           find lib test tool -name '*.dart' \
@@ -126,6 +132,8 @@ jobs:
           mkdir -p logs
           cp analyze.log logs/debug-analyze-${{ github.run_number }}.log 2>/dev/null || true
           cp test.log logs/debug-test-${{ github.run_number }}.log 2>/dev/null || true
+          cp gen-status.log logs/debug-gen-status-${{ github.run_number }}.log 2>/dev/null || true
+          cp gen-diff.log logs/debug-gen-diff-${{ github.run_number }}.log 2>/dev/null || true
           git add -f logs
           git commit -m "ci logs for run ${{ github.run_number }}" || true
           git push origin ci-logs || true
