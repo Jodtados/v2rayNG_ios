@@ -226,9 +226,9 @@ final class ModQrTransfer {
       'aid': '0',
       'scy': _string(p['method']) ?? '',
       'net': _string(p['network']) ?? '',
-      'type': type,
-      'host': host,
-      'path': path,
+      'type': type ?? '',
+      'host': host ?? '',
+      'path': path ?? '',
       'tls': _string(p['security']) ?? '',
       'sni': _string(p['sni']) ?? '',
       'alpn': _string(p['alpn']) ?? '',
@@ -371,7 +371,8 @@ final class ModQrTransfer {
   /// rejects the same malformed secrets before deriving keys.
   @visibleForTesting
   static Uint8List? decodeBase32(String input) {
-    final clean = input.trimRight('=');
+    // dart:core trimRight() takes no pattern; strip base32 padding.
+    final clean = input.replaceAll(RegExp(r'=+$'), '');
     if (clean.length % 8 == 1 ||
         clean.length % 8 == 3 ||
         clean.length % 8 == 6) {

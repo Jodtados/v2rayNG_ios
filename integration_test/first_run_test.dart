@@ -43,7 +43,7 @@ Finder get _regionTiles => find.byWidgetPredicate(
   (widget) =>
       widget is Semantics &&
       widget.properties.checked != null &&
-      widget.properties.inMutuallyExclusiveGroup,
+      widget.properties.inMutuallyExclusiveGroup == true,
 );
 
 Finder get _selectedTiles => find.byWidgetPredicate(
