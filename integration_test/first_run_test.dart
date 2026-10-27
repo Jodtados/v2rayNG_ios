@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:onexray/main.dart' as app;
@@ -19,17 +19,26 @@ void main() {
     await _tapAndAwait(
       tester,
       find.text('Agree and continue'),
-      find.text('Choose your country or region'),
+      find.text('Get ready to connect'),
     );
 
-    // Choose the first supported region and confirm the selection.
-    await _tapAndAwait(
-      tester,
-      find.text('Choose your country or region'),
-      _regionTiles,
-    );
-    await _tapAndAwait(tester, _regionTiles.first, _selectedTiles);
-    await _tapUntilGone(tester, find.text('Done'), find.text('Direct regions'));
+    // A fresh simulator may preload the region from the device region, in
+    // which case the step is ready immediately and the picker never opens.
+    await _awaitRegionReady(tester);
+    if (find.text('Choose your country or region').evaluate().isNotEmpty) {
+      // Choose the first supported region and confirm the selection.
+      await _tapAndAwait(
+        tester,
+        find.text('Choose your country or region'),
+        _regionTiles,
+      );
+      await _tapAndAwait(tester, _regionTiles.first, _selectedTiles);
+      await _tapUntilGone(
+        tester,
+        find.text('Done'),
+        find.text('Direct regions'),
+      );
+    }
 
     await _tapAndAwait(
       tester,
@@ -37,6 +46,26 @@ void main() {
       find.byType(ConnectPage),
     );
   }, timeout: const Timeout(Duration(minutes: 10)));
+}
+
+/// Resolves as soon as the configuration step either became ready (the
+/// "Go to Home" button enabled) or still waits for a region choice.
+Future<void> _awaitRegionReady(WidgetTester tester) async {
+  final button = find.ancestor(
+    of: find.text('Go to Home'),
+    matching: find.byType(FilledButton),
+  );
+  final deadline = DateTime.now().add(const Duration(seconds: 180));
+  while (button.evaluate().isEmpty ||
+      !tester.widget<FilledButton>(button).enabled) {
+    if (find.text('Choose your country or region').evaluate().isNotEmpty) {
+      return;
+    }
+    if (DateTime.now().isAfter(deadline)) {
+      fail('Setup step never became ready. On screen: ${_screenTexts(tester)}');
+    }
+    await tester.pump(const Duration(milliseconds: 200));
+  }
 }
 
 Finder get _regionTiles => find.byWidgetPredicate(
