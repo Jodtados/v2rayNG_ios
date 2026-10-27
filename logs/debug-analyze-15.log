@@ -1,0 +1,10 @@
+Analyzing v2rayNG_ios...                                        
+
+  error • A nullable expression can't be used as a condition. Try checking that the value isn't 'null' before using it as a condition • integration_test/first_run_test.dart:46:7 • unchecked_use_of_nullable_value
+   info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/pages/servers/import/controller.dart:674:40 • use_build_context_synchronously
+  error • The element type 'String?' can't be assigned to the map value type 'String' • lib/service/mod/qr_transfer/qr_transfer.dart:229:15 • map_value_type_not_assignable
+  error • The element type 'String?' can't be assigned to the map value type 'String' • lib/service/mod/qr_transfer/qr_transfer.dart:230:15 • map_value_type_not_assignable
+  error • The element type 'String?' can't be assigned to the map value type 'String' • lib/service/mod/qr_transfer/qr_transfer.dart:231:15 • map_value_type_not_assignable
+  error • Too many positional arguments: 0 expected, but 1 found. Try removing the extra arguments • lib/service/mod/qr_transfer/qr_transfer.dart:374:35 • extra_positional_arguments
+
+6 issues found. (ran in 35.8s)
