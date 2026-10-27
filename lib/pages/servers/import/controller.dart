@@ -671,6 +671,10 @@ class ServerImportController extends PageCubit<ServerImportPageState> {
     }
     ServerImportResult? total;
     for (final part in parts) {
+      if (!context.mounted) {
+        // Partial import already written; surface what got through.
+        return total;
+      }
       final result = await _importText(context, part);
       if (result != null) {
         total = total == null

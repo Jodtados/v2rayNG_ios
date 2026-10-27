@@ -281,8 +281,12 @@ void main() {
             }),
           )
           .single;
-      // FmtBase emits the security key even when the profile has none.
-      expect(link, 'trojan://secret@[2001:db8::1]:443?security=#tj');
+      // FmtBase emits the security key even when the profile has none, and
+      // the tcp transport default adds type and an empty headerType.
+      expect(
+        link,
+        'trojan://secret@[2001:db8::1]:443?security=&type=tcp&headerType=#tj',
+      );
     });
   });
 
