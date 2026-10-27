@@ -1,0 +1,117 @@
+Using CPython 3.15.2 interpreter at: /Library/Frameworks/Python.framework/Versions/3.15/bin/python3
+Creating virtual environment at: build_scripts/.venv
+['flutter', 'pub', 'get']
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 109.0.0 (110.0.0 available)
+  analyzer 14.5.0 (14.6.0 available)
+  android_file_picker 2.1.1 (2.1.2 available)
+  build 4.0.11 (5.0.0 available)
+  build_config 1.3.3 (1.4.0 available)
+  build_runner 2.16.2 (2.17.1 available)
+  built_collection 5.1.2 (6.0.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  crypto 3.0.7 (3.0.8 available)
+  cupertino_ui 1.1.3 (1.1.4 available)
+  drift 2.35.2 (2.35.3 available)
+  drift_dev 2.35.1 (2.35.2 available)
+  equatable 2.1.0 (3.0.0 available)
+  file_picker 13.1.0 (13.3.0 available)
+  file_picker_darwin 2.3.2 (2.4.0 available)
+  file_selector_macos 0.9.5+1 (0.9.5+2 available)
++ flutter_driver 0.0.0 from sdk flutter
+  flutter_local_notifications 23.0.0-dev.4 (23.0.0-dev.5 available)
++ fuchsia_remote_debug_protocol 0.0.0 from sdk flutter
+  go_router 18.1.0 (18.1.1 available)
+  http_multi_server 3.2.2 (3.2.3 available)
+  icloud_storage_plus 4.0.0 (4.1.1 available)
+  image_picker_ios 0.8.13+12 (0.8.13+13 available)
+! isolate_manager 6.3.2 (overridden)
+  jni 1.1.0 (1.1.1 available)
+  json_serializable 6.14.1 (6.15.2 available)
+  lucide_icons_flutter 3.1.25 (4.0.1 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.7.0 (1.8.0 available)
+  package_config 2.2.0 (3.0.0 available)
+  permission_handler_apple 9.6.2 (9.6.4 available)
+  pigeon 29.0.10 (29.0.11 available)
+  posix 6.5.2 (6.5.3 available)
+  pubspec_parse 1.6.0 (1.7.0 available)
+  saf_stream 4.0.2 (4.0.3 available)
+  screen_retriever 0.2.2 (0.3.0 available)
+  shadcn_ui 0.57.2 (0.57.3 available)
+  shared_preferences_android 2.5.0 (2.5.4 available)
+  shared_preferences_foundation 2.6.0 (2.6.1 available)
+  source_helper 1.3.13 (1.4.0 available)
+  sqlite3 3.7.1 (3.8.0 available)
+  sqlparser 0.45.0 (0.45.1 available)
++ sync_http 0.3.1
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.3 (1.2.4 available)
+  vector_graphics_compiler 1.3.2 (1.3.3 available)
+  vector_math 2.4.3 (2.4.4 available)
+  web 1.1.1 (1.1.2 available)
++ webdriver 3.2.0
+  xml 7.0.1 (7.1.0 available)
+Changed 4 dependencies!
+45 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+['/Users/runner/work/v2rayNG_ios/v2rayNG_ios/OneXray/build_scripts/.venv/bin/python', 'build/main.py', 'apple', 'go']
+Geo data setup completed successfully.
+xcframework successfully written out to: /Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/LibXray.xcframework
+['build/main.py', 'apple', 'go']
+['xcrun', '--sdk', 'iphoneos', '--show-sdk-path']
+['go', 'build', '-trimpath', '-ldflags', '-s -w -buildid=', '-o=/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/iphoneos-arm64/libXray.a', '-buildmode=c-archive', './cgo_bridge']
+['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-path']
+['go', 'build', '-trimpath', '-ldflags', '-s -w -buildid=', '-o=/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/iphonesimulator-x86_64/libXray.a', '-buildmode=c-archive', './cgo_bridge']
+['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-path']
+['go', 'build', '-trimpath', '-ldflags', '-s -w -buildid=', '-o=/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/iphonesimulator-arm64/libXray.a', '-buildmode=c-archive', './cgo_bridge']
+['lipo', '-create', '-arch', 'x86_64', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/iphonesimulator-x86_64/libXray.a', '-arch', 'arm64', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/iphonesimulator-arm64/libXray.a', '-output', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/iphonesimulator-x86_64-arm64/libXray.a']
+['xcrun', '--sdk', 'macosx', '--show-sdk-path']
+['go', 'build', '-trimpath', '-ldflags', '-s -w -buildid=', '-o=/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/macosx-x86_64/libXray.a', '-buildmode=c-archive', './cgo_bridge']
+['xcrun', '--sdk', 'macosx', '--show-sdk-path']
+['go', 'build', '-trimpath', '-ldflags', '-s -w -buildid=', '-o=/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/macosx-arm64/libXray.a', '-buildmode=c-archive', './cgo_bridge']
+['lipo', '-create', '-arch', 'x86_64', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/macosx-x86_64/libXray.a', '-arch', 'arm64', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/macosx-arm64/libXray.a', '-output', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/macosx-x86_64-arm64/libXray.a']
+['xcrun', '--sdk', 'appletvos', '--show-sdk-path']
+['go', 'build', '-trimpath', '-ldflags', '-s -w -buildid=', '-o=/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/appletvos-arm64/libXray.a', '-buildmode=c-archive', './cgo_bridge']
+['xcrun', '--sdk', 'appletvsimulator', '--show-sdk-path']
+['go', 'build', '-trimpath', '-ldflags', '-s -w -buildid=', '-o=/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/appletvsimulator-x86_64/libXray.a', '-buildmode=c-archive', './cgo_bridge']
+['xcrun', '--sdk', 'appletvsimulator', '--show-sdk-path']
+['go', 'build', '-trimpath', '-ldflags', '-s -w -buildid=', '-o=/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/appletvsimulator-arm64/libXray.a', '-buildmode=c-archive', './cgo_bridge']
+['lipo', '-create', '-arch', 'x86_64', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/appletvsimulator-x86_64/libXray.a', '-arch', 'arm64', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/appletvsimulator-arm64/libXray.a', '-output', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/appletvsimulator-x86_64-arm64/libXray.a']
+['xcodebuild', '-create-xcframework', '-library', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/iphoneos-arm64/libXray.a', '-headers', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/include', '-library', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/iphonesimulator-x86_64-arm64/libXray.a', '-headers', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/include', '-library', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/macosx-x86_64-arm64/libXray.a', '-headers', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/include', '-library', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/appletvos-arm64/libXray.a', '-headers', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/include', '-library', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/appletvsimulator-x86_64-arm64/libXray.a', '-headers', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/apple_xcframework/include', '-output', '/Users/runner/work/v2rayNG_ios/v2rayNG_ios/libXray/LibXray.xcframework']
+['xcrun', 'agvtool', 'new-version', '-all', '406']
+Setting version of project Runner to: 
+    406.
+
+Also setting CFBundleVersion key (assuming it exists)
+
+Updating CFBundleVersion in Info.plist(s)...
+
+Updated CFBundleVersion in "Runner.xcodeproj/../Runner/Info.plist" to 406
+Updated CFBundleVersion in "Runner.xcodeproj/../tunnel/Info.plist" to 406
+Updated CFBundleVersion in "Runner.xcodeproj/../widget/Info.plist" to 406
+Cannot find "Runner.xcodeproj/../YES"
+
+
+['dart', 'run', 'tool/ffigen.dart']
+Running build hooks...Running build hooks...[INFO]   : Input Headers: [file:///Users/runner/work/v2rayNG_ios/v2rayNG_ios/OneXray/c/include/libXray.h, file:///Users/runner/work/v2rayNG_ios/v2rayNG_ios/OneXray/c/include/vole.h, file:///Users/runner/work/v2rayNG_ios/v2rayNG_ios/OneXray/c/include/vole_windows_uwp.h]
+[WARNING]: Removed All Struct Members from __darwin_arm_neon_state64(__darwin_arm_neon_state64), struct member has an unsupported type.
+[WARNING]: Removed All Struct Members from __darwin_arm_neon_state(__darwin_arm_neon_state), struct member has an unsupported type.
+[WARNING]: Removed All Struct Members from __darwin_mcontext64(__darwin_mcontext64), Incomplete Nested Struct member not supported.
+[WARNING]: Skipped Function '_OSSwapInt16', inline functions are not supported.
+[WARNING]: Skipped Function '_OSSwapInt32', inline functions are not supported.
+[WARNING]: Skipped Function '_OSSwapInt64', inline functions are not supported.
+[WARNING]: Removed All Struct Members from UnnamedStruct(UnnamedStruct), Bit Field members not supported.
+[WARNING]: Removed All Struct Members from UnnamedStruct(UnnamedStruct), Bit Field members not supported.
+[WARNING]: Removed All Union Members from wait(wait), Incomplete Nested Struct member not supported.
+[WARNING]: No definition found for declaration -(Cursor) spelling: _malloc_zone_t, kind: 2, kindSpelling: StructDecl, type: 105, typeSpelling: struct _malloc_zone_t, usr: c:@S@_malloc_zone_t
+[WARNING]: No definition found for declaration -(Cursor) spelling: _malloc_zone_t, kind: 2, kindSpelling: StructDecl, type: 105, typeSpelling: struct _malloc_zone_t, usr: c:@S@_malloc_zone_t
+[WARNING]: Skipped Function 'strtold', function has unsupported return type or parameter type.
+[WARNING]: Skipped Function 'atexit_b', function has unsupported return type or parameter type.
+[WARNING]: Skipped Function 'bsearch_b', function has unsupported return type or parameter type.
+[WARNING]: Skipped Function 'heapsort_b', function has unsupported return type or parameter type.
+[WARNING]: Skipped Function 'mergesort_b', function has unsupported return type or parameter type.
+[WARNING]: Skipped Function 'psort_b', function has unsupported return type or parameter type.
+[WARNING]: Skipped Function 'qsort_b', function has unsupported return type or parameter type.
+[INFO]   : Finished, Bindings generated in /Users/runner/work/v2rayNG_ios/v2rayNG_ios/OneXray/lib/core/ffi/generated_bindings.dart
