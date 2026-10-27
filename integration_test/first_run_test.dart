@@ -54,16 +54,18 @@ void main() {
 /// row while the preload swaps its label silently does nothing, so the
 /// manual path only starts once the row has stayed pending for a while.
 Future<bool> _awaitRegionReady(WidgetTester tester) async {
+  // material_ui ships its own FilledButton subclass, so match the shared
+  // ButtonStyleButton base instead of any concrete button type.
   final button = find.ancestor(
     of: find.text('Go to Home'),
-    matching: find.byType(FilledButton),
+    matching: find.byWidgetPredicate((widget) => widget is ButtonStyleButton),
   );
   final preloadWindow = DateTime.now().add(const Duration(seconds: 45));
   final deadline = DateTime.now().add(const Duration(seconds: 240));
   while (true) {
     final enabled =
         button.evaluate().isNotEmpty &&
-        tester.widget<FilledButton>(button).enabled;
+        tester.widget<ButtonStyleButton>(button).enabled;
     if (enabled) return false;
     if (find.text('Choose your country or region').evaluate().isNotEmpty &&
         DateTime.now().isAfter(preloadWindow)) {
