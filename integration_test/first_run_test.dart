@@ -22,10 +22,10 @@ void main() {
       find.text('Get ready to connect'),
     );
 
-    // A fresh simulator may preload the region from the device region, in
-    // which case the step is ready immediately and the picker never opens.
-    await _awaitRegionReady(tester);
-    if (find.text('Choose your country or region').evaluate().isNotEmpty) {
+    // The device region may be preloaded a few seconds after the step
+    // renders, enabling "Go to Home" without any manual choice; give that
+    // preload a window before falling back to picking a region by hand.
+    if (await _awaitRegionReady(tester)) {
       // Choose the first supported region and confirm the selection.
       await _tapAndAwait(
         tester,
@@ -48,23 +48,30 @@ void main() {
   }, timeout: const Timeout(Duration(minutes: 10)));
 }
 
-/// Resolves as soon as the configuration step either became ready (the
-/// "Go to Home" button enabled) or still waits for a region choice.
-Future<void> _awaitRegionReady(WidgetTester tester) async {
+/// Waits for the region preload; returns true when a manual region choice
+/// is still required after the preload window elapsed. Tapping the region
+/// row while the preload swaps its label silently does nothing, so the
+/// manual path only starts once the row has stayed pending for a while.
+Future<bool> _awaitRegionReady(WidgetTester tester) async {
   final button = find.ancestor(
     of: find.text('Go to Home'),
     matching: find.byType(FilledButton),
   );
+  final preloadWindow = DateTime.now().add(const Duration(seconds: 45));
   final deadline = DateTime.now().add(const Duration(seconds: 180));
-  while (button.evaluate().isEmpty ||
-      !tester.widget<FilledButton>(button).enabled) {
-    if (find.text('Choose your country or region').evaluate().isNotEmpty) {
-      return;
+  while (true) {
+    final enabled =
+        button.evaluate().isNotEmpty &&
+        tester.widget<FilledButton>(button).enabled;
+    if (enabled) return false;
+    if (find.text('Choose your country or region').evaluate().isNotEmpty &&
+        DateTime.now().isAfter(preloadWindow)) {
+      return true;
     }
     if (DateTime.now().isAfter(deadline)) {
       fail('Setup step never became ready. On screen: ${_screenTexts(tester)}');
     }
-    await tester.pump(const Duration(milliseconds: 200));
+    await tester.pump(const Duration(milliseconds: 300));
   }
 }
 
