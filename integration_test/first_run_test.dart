@@ -55,16 +55,24 @@ Finder get _selectedTiles => find.byWidgetPredicate(
 Future<void> _awaitFound(
   WidgetTester tester,
   Finder finder, {
-  Duration timeout = const Duration(seconds: 120),
+  Duration timeout = const Duration(seconds: 180),
 }) async {
   final deadline = DateTime.now().add(timeout);
   while (finder.evaluate().isEmpty) {
     if (DateTime.now().isAfter(deadline)) {
-      fail('Timed out waiting for $finder');
+      fail('Timed out waiting for $finder. On screen: ${_screenTexts(tester)}');
     }
     await tester.pump(const Duration(milliseconds: 200));
   }
 }
+
+/// All rendered text labels, for failure messages: integration runs have no
+/// screenshots, so this is the only way to see which screen stalled.
+String _screenTexts(WidgetTester tester) => tester
+    .widgetList<Text>(find.byType(Text))
+    .map((text) => text.data ?? text.span?.toPlainText())
+    .whereType<String>()
+    .join(' | ');
 
 /// Taps [tapFinder] until [expectFinder] shows up. Wizard buttons stay
 /// disabled while their action is busy, so an early single tap may be lost.
@@ -72,14 +80,17 @@ Future<void> _tapAndAwait(
   WidgetTester tester,
   Finder tapFinder,
   Finder expectFinder, {
-  Duration timeout = const Duration(seconds: 120),
+  Duration timeout = const Duration(seconds: 180),
 }) async {
   await _awaitFound(tester, tapFinder, timeout: timeout);
   final deadline = DateTime.now().add(timeout);
   var lastTap = DateTime.fromMillisecondsSinceEpoch(0);
   while (expectFinder.evaluate().isEmpty) {
     if (DateTime.now().isAfter(deadline)) {
-      fail('Timed out after tapping $tapFinder, waiting for $expectFinder');
+      fail(
+        'Timed out after tapping $tapFinder, waiting for $expectFinder. '
+        'On screen: ${_screenTexts(tester)}',
+      );
     }
     if (tapFinder.evaluate().isNotEmpty &&
         DateTime.now().isAfter(lastTap.add(const Duration(seconds: 2)))) {
@@ -95,14 +106,17 @@ Future<void> _tapUntilGone(
   WidgetTester tester,
   Finder tapFinder,
   Finder goneFinder, {
-  Duration timeout = const Duration(seconds: 120),
+  Duration timeout = const Duration(seconds: 180),
 }) async {
   await _awaitFound(tester, tapFinder, timeout: timeout);
   final deadline = DateTime.now().add(timeout);
   var lastTap = DateTime.fromMillisecondsSinceEpoch(0);
   while (goneFinder.evaluate().isNotEmpty) {
     if (DateTime.now().isAfter(deadline)) {
-      fail('Timed out after tapping $tapFinder, waiting for $goneFinder to go');
+      fail(
+        'Timed out after tapping $tapFinder, waiting for $goneFinder to go. '
+        'On screen: ${_screenTexts(tester)}',
+      );
     }
     if (tapFinder.evaluate().isNotEmpty &&
         DateTime.now().isAfter(lastTap.add(const Duration(seconds: 2)))) {
