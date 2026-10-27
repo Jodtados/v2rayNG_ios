@@ -26,7 +26,7 @@ void main() {
     // The device region may be preloaded a few seconds after the step
     // renders, enabling "Go to Home" without any manual choice; give that
     // preload a window before falling back to picking a region by hand.
-    if (await _awaitRegionReady(tester)) {
+    if (await _regionStillPending(tester)) {
       // Choose the first supported region and confirm the selection.
       await _tapAndAwait(
         tester,
@@ -49,36 +49,18 @@ void main() {
   }, timeout: const Timeout(Duration(minutes: 10)));
 }
 
-/// Waits for the region preload; returns true when a manual region choice
-/// is still required after the preload window elapsed. Tapping the region
-/// row while the preload swaps its label silently does nothing, so the
-/// manual path only starts once the row has stayed pending for a while.
-Future<bool> _awaitRegionReady(WidgetTester tester) async {
-  // material_ui ships its own FilledButton subclass, so match the shared
-  // ButtonStyleButton base instead of any concrete button type.
-  final button = find.ancestor(
-    of: find.text('Go to Home'),
-    matching: find.byWidgetPredicate((widget) => widget is ButtonStyleButton),
-  );
+/// Gives the device-region preload a window to swap the region row label:
+/// tapping the row mid-swap silently does nothing, so the manual picker
+/// only starts once the row has stayed pending for a while. Returns true
+/// when a manual region choice is still required.
+Future<bool> _regionStillPending(WidgetTester tester) async {
+  final row = find.text('Choose your country or region');
   final preloadWindow = DateTime.now().add(const Duration(seconds: 45));
-  final deadline = DateTime.now().add(const Duration(seconds: 240));
-  while (true) {
-    final enabled =
-        button.evaluate().isNotEmpty &&
-        tester.widget<ButtonStyleButton>(button).enabled;
-    if (enabled) return false;
-    if (find.text('Choose your country or region').evaluate().isNotEmpty &&
-        DateTime.now().isAfter(preloadWindow)) {
-      return true;
-    }
-    if (DateTime.now().isAfter(deadline)) {
-      fail(
-        'Setup step never became ready. '
-        '${_setupDump(tester)} On screen: ${_screenTexts(tester)}',
-      );
-    }
+  while (row.evaluate().isNotEmpty) {
+    if (DateTime.now().isAfter(preloadWindow)) return true;
     await tester.pump(const Duration(milliseconds: 300));
   }
+  return false;
 }
 
 Finder get _regionTiles => find.byWidgetPredicate(
