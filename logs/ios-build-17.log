@@ -1,0 +1,290 @@
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 109.0.0 (110.0.0 available)
+  analyzer 14.5.0 (14.6.0 available)
+  android_file_picker 2.1.1 (2.1.2 available)
+  build 4.0.11 (5.0.0 available)
+  build_config 1.3.3 (1.4.0 available)
+  build_runner 2.16.2 (2.17.1 available)
+  built_collection 5.1.2 (6.0.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  crypto 3.0.7 (3.0.8 available)
+  cupertino_ui 1.1.3 (1.1.4 available)
+  drift 2.35.2 (2.35.3 available)
+  drift_dev 2.35.1 (2.35.2 available)
+  equatable 2.1.0 (3.0.0 available)
+  file_picker 13.1.0 (13.3.0 available)
+  file_picker_darwin 2.3.2 (2.4.0 available)
+  file_selector_macos 0.9.5+1 (0.9.5+2 available)
+  flutter_local_notifications 23.0.0-dev.4 (23.0.0-dev.5 available)
+  go_router 18.1.0 (18.1.1 available)
+  http_multi_server 3.2.2 (3.2.3 available)
+  icloud_storage_plus 4.0.0 (4.1.1 available)
+  image_picker_ios 0.8.13+12 (0.8.13+13 available)
+! isolate_manager 6.3.2 (overridden)
+  jni 1.1.0 (1.1.1 available)
+  json_serializable 6.14.1 (6.15.2 available)
+  lucide_icons_flutter 3.1.25 (4.0.1 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.7.0 (1.8.0 available)
+  package_config 2.2.0 (3.0.0 available)
+  permission_handler_apple 9.6.2 (9.6.4 available)
+  pigeon 29.0.10 (29.0.11 available)
+  posix 6.5.2 (6.5.3 available)
+  pubspec_parse 1.6.0 (1.7.0 available)
+  saf_stream 4.0.2 (4.0.3 available)
+  screen_retriever 0.2.2 (0.3.0 available)
+  shadcn_ui 0.57.2 (0.57.3 available)
+  shared_preferences_android 2.5.0 (2.5.4 available)
+  shared_preferences_foundation 2.6.0 (2.6.1 available)
+  source_helper 1.3.13 (1.4.0 available)
+  sqlite3 3.7.1 (3.8.0 available)
+  sqlparser 0.45.0 (0.45.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.3 (1.2.4 available)
+  vector_graphics_compiler 1.3.2 (1.3.3 available)
+  vector_math 2.4.3 (2.4.4 available)
+  web 1.1.1 (1.1.2 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+45 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+Archiving net.yuandev.onexray...
+Running Xcode build...                                          
+Xcode archive done.                                         109.5s
+Failed to build iOS app
+Error output from Xcode build:
+↳
+    2026-10-27 18:22:25.346 xcodebuild[36890:102019] [MT] IDESchemeActionsInvocationRecord: Device <DVTiPhonePlaceholder: 0x7ae65766c0 (Any iOS Device | undefined_arch)> is missing operatingSystemVersion, operatingSystemVersionWithBuildNumber.
+    ** ARCHIVE FAILED **
+
+
+Xcode's output:
+↳
+    Writing result bundle at path:
+    	/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/flutter_tools.9KizVy/flutter_ios_build_temp_dir8Hv0SI/temporary_xcresult_bundle
+
+    /Users/runner/.pub-cache/hosted/pub.dev/in_app_review-2.0.12/ios/in_app_review/Sources/in_app_review/InAppReviewPlugin.swift:43:19: warning: unnecessary check for 'iOS'; enclosing scope ensures guard will always be true [#UselessAvailabilityCheck]
+    35 |             }
+    36 |             result(nil)
+    37 |         } else if #available(iOS 14.0, *) {
+       |                `- note: enclosing scope here
+    38 |             log("iOS 14+")
+    39 |             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+       :
+    41 |             }
+    42 |             result(nil)
+    43 |         } else if #available(iOS 10.3, *) {
+       |                   `- warning: unnecessary check for 'iOS'; enclosing scope ensures guard will always be true [#UselessAvailabilityCheck]
+    44 |             log("iOS 10.3+")
+    45 |             SKStoreReviewController.requestReview()
+
+    [#UselessAvailabilityCheck]: <https://docs.swift.org/compiler/documentation/diagnostics/useless-availability-check>
+    error: the following command failed with exit code 0 but produced no further output
+    SwiftCompile normal arm64 (in target 'icloud_storage_plus' from project 'icloud_storage_plus')
+    /Users/runner/.pub-cache/hosted/pub.dev/icloud_storage_plus-4.0.0/ios/icloud_storage_plus/Sources/icloud_storage_plus/ICloudDocument.swift:570:43: warning: passing non-Sendable parameter 'fallbackCreate' to function expecting a '@Sendable' closure
+    545 |     prepareReplacementFile: @escaping (URL) throws -> Void,
+    546 |     completion: @escaping (Error?) -> Void,
+    547 |     fallbackCreate: @escaping () -> Void
+        |     `- note: parameter 'fallbackCreate' is implicitly non-Sendable
+    548 | ) {
+    549 |     Task.detached(priority: .userInitiated) {
+        :
+    568 |         }
+    569 | 
+    570 |         DispatchQueue.main.async(execute: fallbackCreate)
+        |                                           `- warning: passing non-Sendable parameter 'fallbackCreate' to function expecting a '@Sendable' closure
+    571 |     }
+    572 | }
+
+    /Users/runner/.pub-cache/hosted/pub.dev/icloud_storage_plus-4.0.0/ios/icloud_storage_plus/Sources/icloud_storage_plus/iOSICloudStoragePlugin.swift:2566:1: warning: extension declares a conformance of imported type 'FlutterError' to imported protocol 'Error'; this will not behave correctly if the owners of 'Flutter' introduce this conformance in the future
+    2564 | // compiles. If Swift 6 language mode is ever enabled, this must become
+    2565 | // `extension FlutterError: @retroactive Error {}`.
+    2566 | extension FlutterError: Error {}
+         | |- warning: extension declares a conformance of imported type 'FlutterError' to imported protocol 'Error'; this will not behave correctly if the owners of 'Flutter' introduce this conformance in the future
+         | `- note: add '@retroactive' to silence this warning
+    2567 | 
+    /Users/runner/.pub-cache/hosted/pub.dev/mobile_scanner-7.4.2/darwin/mobile_scanner/Sources/mobile_scanner/MobileScannerCameraSelector.swift:104:41: warning: 'devices(for:)' was deprecated in iOS 10.0: Use AVCaptureDeviceDiscoverySession instead. [#DeprecatedDeclaration]
+    102 |         // On macOS, DiscoverySession handles 10.15+; older macOS falls
+    103 |         // through to AVCaptureDevice.default(for:) below.
+    104 |         if let device = AVCaptureDevice.devices(for: .video).filter({ $0.position == position }).first {
+        |                                         `- warning: 'devices(for:)' was deprecated in iOS 10.0: Use AVCaptureDeviceDiscoverySession instead. [#DeprecatedDeclaration]
+    105 |             return device
+    106 |         }
+
+    /Users/runner/.pub-cache/hosted/pub.dev/mobile_scanner-7.4.2/darwin/mobile_scanner/Sources/mobile_scanner/MobileScannerPlugin.swift:1089:20: warning: immutable value 'device' was never used; consider replacing with '_' or removing it [#NoUsage]
+    1087 |         case #keyPath(AVCaptureDevice.videoZoomFactor):
+    1088 |             if let zoomScale = change?[.newKey] as? CGFloat,
+    1089 |                let device = object as? AVCaptureDevice {
+         |                    `- warning: immutable value 'device' was never used; consider replacing with '_' or removing it [#NoUsage]
+    1090 |                 
+    1091 |                 let scale = getScaleFromZoomFactor(actualScale: zoomScale)
+
+    [#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+    [#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+    /Users/runner/.pub-cache/hosted/pub.dev/permission_handler_apple-9.6.2/ios/permission_handler_apple/Sources/permission_handler_apple/strategies/PhonePermissionStrategy.m:50:35: warning: 'subscriberCellularProvider' is deprecated: first deprecated in iOS 12.0 [-Wdeprecated-declarations]
+       50 |     CTCarrier *carrier = [netInfo subscriberCellularProvider];
+          |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+          |                                   serviceSubscriberCellularProviders
+    In module 'CoreTelephony' imported from /Users/runner/.pub-cache/hosted/pub.dev/permission_handler_apple-9.6.2/ios/permission_handler_apple/Sources/permission_handler_apple/strategies/PhonePermissionStrategy.m:8:
+    /Applications/Xcode_27.2_Release_Candidate.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreTelephony.framework/Headers/CTTelephonyNetworkInfo.h:113:50: note: property 'subscriberCellularProvider' is declared deprecated here
+      113 | @property(readonly, retain, nullable) CTCarrier *subscriberCellularProvider API_DEPRECATED_WITH_REPLACEMENT("serviceSubscriberCellularProviders", ios(4.0, 12.0)) API_UNAVAILABLE(macos);
+          |                                                  ^
+    /Applications/Xcode_27.2_Release_Candidate.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreTelephony.framework/Headers/CTTelephonyNetworkInfo.h:113:50: note: 'subscriberCellularProvider' has been explicitly marked deprecated here
+    1 warning generated.
+    /Users/runner/.pub-cache/hosted/pub.dev/permission_handler_apple-9.6.2/ios/permission_handler_apple/Sources/permission_handler_apple/strategies/NotificationPermissionStrategy.m:57:9: warning: @available does not guard availability here; use if (@available) instead [-Wunsupported-availability-guard]
+       57 |     if (@available(iOS 12 , *) && settings.authorizationStatus == UNAuthorizationStatusProvisional) {
+          |         ^
+    1 warning generated.
+    /Users/runner/.pub-cache/hosted/pub.dev/flutter_local_notifications-23.0.0-dev.4/ios/flutter_local_notifications/Sources/flutter_local_notifications/FlutterLocalNotificationsPlugin.m:854:24: warning: incompatible pointer types initializing 'NSMutableDictionary *' with an expression of type 'NSDictionary *' [-Wincompatible-pointer-types]
+      854 |   NSMutableDictionary *userDict = [self buildUserDict:arguments[ID]
+          |                        ^          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      855 |                                                 title:content.title
+          |                                                 ~~~~~~~~~~~~~~~~~~~
+      856 |                                          presentAlert:presentAlert
+          |                                          ~~~~~~~~~~~~~~~~~~~~~~~~~
+      857 |                                          presentSound:presentSound
+          |                                          ~~~~~~~~~~~~~~~~~~~~~~~~~
+      858 |                                          presentBadge:presentBadge
+          |                                          ~~~~~~~~~~~~~~~~~~~~~~~~~
+      859 |                                         presentBanner:presentBanner
+          |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      860 |                                           presentList:presentList
+          |                                           ~~~~~~~~~~~~~~~~~~~~~~~
+      861 |                                               payload:arguments[PAYLOAD]];
+          |                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /Users/runner/.pub-cache/hosted/pub.dev/flutter_local_notifications-23.0.0-dev.4/ios/flutter_local_notifications/Sources/flutter_local_notifications/FlutterLocalNotificationsPlugin.m:1068:30: warning: 'UNNotificationPresentationOptionAlert' is deprecated: first deprecated in iOS 14.0 [-Wdeprecated-declarations]
+     1068 |       presentationOptions |= UNNotificationPresentationOptionAlert;
+          |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          |                              UNNotificationPresentationOptionList | UNNotificationPresentationOptionBanner
+    In module 'UserNotifications' imported from /Users/runner/.pub-cache/hosted/pub.dev/flutter_local_notifications-23.0.0-dev.4/ios/flutter_local_notifications/Sources/flutter_local_notifications/./include/flutter_local_notifications/FlutterLocalNotificationsPlugin.h:2:
+    /Applications/Xcode_27.2_Release_Candidate.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS27.2.sdk/System/Library/Frameworks/UserNotifications.framework/Headers/UNUserNotificationCenter.h:84:5: note: 'UNNotificationPresentationOptionAlert' has been explicitly marked deprecated here
+       84 |     UNNotificationPresentationOptionAlert API_DEPRECATED_WITH_REPLACEMENT("UNNotificationPresentationOptionList | UNNotificationPresentationOptionBanner", macos(10.14, 11.0), ios(10.0, 14.0), watchos(3.0, 7.0), tvos(10.0, 14.0)) = (1 << 2),
+          |     ^
+    2 warnings generated.
+    error: the following command failed with exit code 0 but produced no further output
+    SwiftCompile normal arm64 (in target 'home_widget' from project 'home_widget')
+    /Users/runner/.pub-cache/hosted/pub.dev/home_widget-0.10.0/ios/home_widget/Sources/home_widget/HomeWidgetBackgroundWorker.swift:56:9: warning: initialization of immutable value 'callbackName' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+     54 |     )
+     55 |     let flutterCallbackInfo = FlutterCallbackCache.lookupCallbackInformation(dispatcher)
+     56 |     let callbackName = flutterCallbackInfo?.callbackName
+        |         `- warning: initialization of immutable value 'callbackName' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+     57 |     let callbackLibrary = flutterCallbackInfo?.callbackLibraryPath
+     58 | 
+
+    /Users/runner/.pub-cache/hosted/pub.dev/home_widget-0.10.0/ios/home_widget/Sources/home_widget/HomeWidgetBackgroundWorker.swift:57:9: warning: initialization of immutable value 'callbackLibrary' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+     55 |     let flutterCallbackInfo = FlutterCallbackCache.lookupCallbackInformation(dispatcher)
+     56 |     let callbackName = flutterCallbackInfo?.callbackName
+     57 |     let callbackLibrary = flutterCallbackInfo?.callbackLibraryPath
+        |         `- warning: initialization of immutable value 'callbackLibrary' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+     58 | 
+     59 |     let started = engine?.run(
+
+    /Users/runner/.pub-cache/hosted/pub.dev/home_widget-0.10.0/ios/home_widget/Sources/home_widget/HomeWidgetBackgroundWorker.swift:59:9: warning: initialization of immutable value 'started' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+     57 |     let callbackLibrary = flutterCallbackInfo?.callbackLibraryPath
+     58 | 
+     59 |     let started = engine?.run(
+        |         `- warning: initialization of immutable value 'started' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+     60 |       withEntrypoint: flutterCallbackInfo?.callbackName,
+     61 |       libraryURI: flutterCallbackInfo?.callbackLibraryPath)
+
+    /Users/runner/.pub-cache/hosted/pub.dev/home_widget-0.10.0/ios/home_widget/Sources/home_widget/HomeWidgetBackgroundWorker.swift:95:58: warning: expression implicitly coerced from 'String?' to 'Any'
+     93 |     await withCheckedContinuation { continuation in
+     94 |       DispatchQueue.main.async {
+     95 |         _channel.invokeMethod("", arguments: [_callback, url?.absoluteString]) { _ in
+        |                                                          |    |- note: provide a default value to avoid this warning
+        |                                                          |    |- note: force-unwrap the value to avoid this warning
+        |                                                          |    `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+        |                                                          `- warning: expression implicitly coerced from 'String?' to 'Any'
+     96 |           continuation.resume()
+     97 |         }
+
+    /Users/runner/.pub-cache/hosted/pub.dev/home_widget-0.10.0/ios/home_widget/Sources/home_widget/HomeWidgetBackgroundWorker.swift:95:9: warning: capture of '_channel' with non-Sendable type 'FlutterMethodChannel' in a '@Sendable' closure [#SendableClosureCaptures]
+     93 |     await withCheckedContinuation { continuation in
+     94 |       DispatchQueue.main.async {
+     95 |         _channel.invokeMethod("", arguments: [_callback, url?.absoluteString]) { _ in
+        |         `- warning: capture of '_channel' with non-Sendable type 'FlutterMethodChannel' in a '@Sendable' closure [#SendableClosureCaptures]
+     96 |           continuation.resume()
+     97 |         }
+
+    /Users/runner/Library/Developer/Xcode/DerivedData/Runner-ckgljlbwndncklfjkbhkkyzmkags/Build/Intermediates.noindex/ArchiveIntermediates/Runner/BuildProductsPath/Release-iphoneos/Flutter.framework/Headers/FlutterChannels.h:220:12: note: class 'FlutterMethodChannel' does not conform to the 'Sendable' protocol
+    218 |  */
+    219 | FLUTTER_DARWIN_EXPORT
+    220 | @interface FlutterMethodChannel : NSObject
+        |            `- note: class 'FlutterMethodChannel' does not conform to the 'Sendable' protocol
+    221 | /**
+    222 |  * Creates a `FlutterMethodChannel` with the specified name and binary messenger.
+
+    /Users/runner/.pub-cache/hosted/pub.dev/home_widget-0.10.0/ios/home_widget/Sources/home_widget/HomeWidgetBackgroundWorker.swift:8:1: warning: add '@preconcurrency' to suppress 'Sendable'-related warnings from module 'Flutter' [#AddPreconcurrencyImport]
+      6 | //
+      7 | 
+      8 | import Flutter
+        | `- warning: add '@preconcurrency' to suppress 'Sendable'-related warnings from module 'Flutter' [#AddPreconcurrencyImport]
+      9 | import Foundation
+     10 | import Swift
+
+    [#AddPreconcurrencyImport]: <https://docs.swift.org/compiler/documentation/diagnostics/add-preconcurrency-import>
+    [#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+    [#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+    lib/service/mod/qr_transfer/qr_transfer.dart:68:58: Error: The argument type 'Future<String?> Function(String, List<int>)?' can't be assigned to the parameter type 'Future<String?> Function(String, List<int>)'.
+     - 'Future' is from 'dart:async'.
+     - 'List' is from 'dart:core'.
+      }) : this._(secret, const MethodChannel(_channelName), decrypt);
+                                                             ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:224:13: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'ps': _string(p['remarks']),
+                ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:225:14: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'add': _string(p['server']),
+                 ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:226:15: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'port': _string(p['serverPort']),
+                  ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:227:13: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'id': _string(p['password']),
+                ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:229:14: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'scy': _string(p['method']),
+                 ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:230:14: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'net': _string(p['network']),
+                 ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:231:15: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'type': type,
+                  ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:232:15: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'host': host,
+                  ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:233:15: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'path': path,
+                  ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:234:14: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'tls': _string(p['security']),
+                 ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:235:14: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'sni': _string(p['sni']),
+                 ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:236:15: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'alpn': _string(p['alpn']),
+                  ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:237:13: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'fp': _string(p['fingerPrint']),
+                ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:239:14: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'vcn': _string(p['verifyPeerCertByName']),
+                 ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:240:14: Error: A value of type 'String?' can't be assigned to a variable of type 'String'.
+          'pcs': _string(p['pinnedCA256']),
+                 ^
+    lib/service/mod/qr_transfer/qr_transfer.dart:376:34: Error: Too many positional arguments: 0 allowed, but 1 found.
+    Try removing the extra positional arguments.
+        final clean = input.trimRight('=');
+                                     ^
+    Target kernel_snapshot_program failed: Exception
+    Failed to package /Users/runner/work/v2rayNG_ios/v2rayNG_ios/OneXray.
+    Command PhaseScriptExecution failed with a nonzero exit code
+    note: Run script build phase 'Run Script' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'Runner' from project 'Runner')
+    note: Run script build phase 'Thin Binary' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'Runner' from project 'Runner')
+
+Encountered error while archiving for device.
