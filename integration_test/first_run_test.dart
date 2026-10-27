@@ -70,7 +70,7 @@ Future<void> _awaitFound(
 /// screenshots, so this is the only way to see which screen stalled.
 String _screenTexts(WidgetTester tester) => tester
     .widgetList<Text>(find.byType(Text))
-    .map((text) => text.data ?? text.span?.toPlainText())
+    .map((text) => text.data)
     .whereType<String>()
     .join(' | ');
 
