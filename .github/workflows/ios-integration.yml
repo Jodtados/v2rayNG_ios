@@ -1,0 +1,123 @@
+#
+# Runs the Flutter integration tests on a real iOS Simulator.
+#
+# Mirrors the preparation of .github/workflows/ios-unsigned.yml (libXray
+# core build) and then boots the first available iPhone simulator and runs
+# `flutter test integration_test`. Mod gates stay disarmed because no
+# MOD_*_SECRET dart-defines are passed here.
+#
+name: iOS integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ios-integration-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  LIBXRAY_REF: main
+  BUILD_NUMBER: ${{ github.run_number }}
+
+jobs:
+  ios-integration:
+    runs-on: xcode-27
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: OneXray
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: OneXray
+
+      - uses: actions/checkout@v7
+        with:
+          repository: XTLS/libXray
+          ref: ${{ env.LIBXRAY_REF }}
+          path: libXray
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version: stable
+          check-latest: true
+          cache-dependency-path: libXray/go.mod
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+          check-latest: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.0
+        with:
+          version: "0.x"
+          enable-cache: false
+
+      - name: Setup Flutter
+        uses: ./OneXray/.github/actions/setup-flutter
+
+      - name: Prepare project and build libXray core
+        run: |
+          set -o pipefail
+          uv run --project build_scripts python build_scripts/prepare_unsigned_ios.py 2>&1 | tee prepare.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            tail -n 120 prepare.log >> "$GITHUB_STEP_SUMMARY" || true
+            grep -Ei 'error|failed|fatal|exception|traceback' prepare.log | head -10 | while IFS= read -r line; do
+              echo "::error::$(echo "$line" | cut -c1-160)"
+            done || true
+            exit "$status"
+          fi
+
+      - name: Boot iPhone simulator
+        run: |
+          set -e
+          udid=$(xcrun simctl list devices available -j | python3 -c \
+            "import json,sys; d=json.load(sys.stdin)['devices']; \
+             print(next(x['udid'] for v in d.values() for x in v \
+               if x['isAvailable'] and x['name'].startswith('iPhone')))")
+          echo "SIM_UDID=$udid" >> "$GITHUB_ENV"
+          xcrun simctl bootstatus "$udid" -b
+
+      - name: Run integration tests
+        run: |
+          set -o pipefail
+          flutter test integration_test -d "$SIM_UDID" --reporter expanded 2>&1 | tee test.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            {
+              echo '## Integration test output (tail)'
+              echo '```'
+              tail -n 150 test.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            grep -Ei 'error|fatal|failed|exception|timed out' test.log | head -10 | while IFS= read -r line; do
+              echo "::error::$(echo "$line" | cut -c1-160)"
+            done || true
+            exit "$status"
+          fi
+
+      - name: Publish failure logs
+        if: failure()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin ci-logs || true
+          git checkout -f -B ci-logs origin/ci-logs 2>/dev/null || git checkout -f -B ci-logs
+          mkdir -p logs
+          cp prepare.log logs/integration-prepare-${{ github.run_number }}.log 2>/dev/null || true
+          cp test.log logs/integration-test-${{ github.run_number }}.log 2>/dev/null || true
+          git add -f logs
+          git commit -m "ci logs for run ${{ github.run_number }}" || true
+          git push origin ci-logs || true
