@@ -1,0 +1,49 @@
+#
+# Re-resolves pubspec.lock on CI so Validate's `git diff --exit-code`
+# stays clean after dependency edits. Pub computes the canonical lock
+# (SDK-pinned transitive versions, sha256 checksums); committing that
+# result is the only way to keep it exact without a local Flutter SDK.
+#
+# Self-triggering: pushes that touch pubspec.yaml, pubspec.lock or this
+# workflow re-run it; a no-change pass exits without committing, so the
+# loop converges after one sync commit.
+#
+name: Lock sync
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - pubspec.yaml
+      - pubspec.lock
+      - .github/workflows/lock-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  lock-sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter
+
+      - name: Resolve lock file
+        run: flutter pub get
+
+      - name: Commit synced lock
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pubspec.lock
+          if git diff --cached --quiet; then
+            echo "pubspec.lock already in sync"
+            exit 0
+          fi
+          git commit -m "chore(deps): sync pubspec.lock after dependency changes"
+          git push
