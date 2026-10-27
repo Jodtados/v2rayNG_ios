@@ -1,0 +1,15 @@
+Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+Archiving net.yuandev.onexray...
+Running Xcode build...                                          
+Xcode archive done.                                         110.2s
+Failed to build iOS app
+Swift Compiler Error (Xcode): Incorrect argument labels in call (have 'key:authenticating:using:', expected '_:using:authenticating:')
+/Users/runner/work/v2rayNG_ios/v2rayNG_ios/OneXray/ios/Runner/ModQr.swift:35:44
+
+Swift Compiler Error (Xcode): Cannot convert value of type 'SymmetricKey' to expected argument type 'AES.GCM.SealedBox'
+/Users/runner/work/v2rayNG_ios/v2rayNG_ios/OneXray/ios/Runner/ModQr.swift:36:25
+
+Swift Compiler Error (Xcode): Cannot convert value of type 'AES.GCM.SealedBox' to expected argument type 'SymmetricKey'
+/Users/runner/work/v2rayNG_ios/v2rayNG_ios/OneXray/ios/Runner/ModQr.swift:38:27
+
+Encountered error while archiving for device.
