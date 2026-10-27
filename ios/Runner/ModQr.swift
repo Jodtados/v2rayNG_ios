@@ -33,11 +33,9 @@ final class ModQrChannel {
                     ciphertext: data.dropFirst(12).dropLast(16),
                     tag: data.suffix(16)
                 )
-                let plain = try AES.GCM.open(
-                    key: SymmetricKey(data: keyData),
-                    authenticating: Data(),
-                    using: sealed
-                )
+                // CryptoKit takes the sealed box first, key second; no AAD —
+                // the Android exporter seals with authenticatedData empty.
+                let plain = try AES.GCM.open(sealed, using: SymmetricKey(data: keyData))
                 guard let text = String(data: plain, encoding: .utf8) else {
                     result(FlutterError(code: "decrypt_failed", message: "not utf-8", details: nil))
                     return
