@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:onexray/main.dart' as app;
 import 'package:onexray/pages/connect/page.dart';
-import 'package:onexray/pages/launch/setup/view.dart';
 
 /// First-run smoke flow on a real iOS simulator: launch, walk the setup
 /// wizard (privacy, region) and land on the connect page. Guards against
@@ -97,22 +96,6 @@ String _screenTexts(WidgetTester tester) => tester
     .map((text) => text.data)
     .whereType<String>()
     .join(' | ');
-
-/// Setup wizard internals, to tell a stalled prepare from a stuck button.
-String _setupDump(WidgetTester tester) {
-  final views = tester.widgetList<SetupView>(find.byType(SetupView)).toList();
-  if (views.isEmpty) return 'no SetupView';
-  final view = views
-      .map(
-        (view) =>
-            'step=${view.state.step.name} busy=${view.state.busy} '
-            'localReady=${view.state.localReady} regions=${view.state.regions} '
-            'active=${view.state.activeAction} failure=${view.state.failure}',
-      )
-      .join(' ; ');
-  final progress = find.byType(LinearProgressIndicator).evaluate().length;
-  return '[$view] progressBars=$progress';
-}
 
 /// Taps [tapFinder] until [expectFinder] shows up. Wizard buttons stay
 /// disabled while their action is busy, so an early single tap may be lost.
