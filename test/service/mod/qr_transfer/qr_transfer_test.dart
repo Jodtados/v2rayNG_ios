@@ -10,43 +10,40 @@ void main() {
 
   group('base32/base64url codecs', () {
     test('decodes valid groups', () {
-      expect(utf8.decode(ModQrTransfer._decodeBase32('MY======')!), 'f');
-      expect(utf8.decode(ModQrTransfer._decodeBase32('MZXQ====')!), 'fo');
-      expect(utf8.decode(ModQrTransfer._decodeBase32('MZXW6===')!), 'foo');
-      expect(utf8.decode(ModQrTransfer._decodeBase32('MZXW6YQ=')!), 'foob');
-      expect(utf8.decode(ModQrTransfer._decodeBase32('MZXW6YTB')!), 'fooba');
+      expect(utf8.decode(ModQrTransfer.decodeBase32('MY======')!), 'f');
+      expect(utf8.decode(ModQrTransfer.decodeBase32('MZXQ====')!), 'fo');
+      expect(utf8.decode(ModQrTransfer.decodeBase32('MZXW6===')!), 'foo');
+      expect(utf8.decode(ModQrTransfer.decodeBase32('MZXW6YQ=')!), 'foob');
+      expect(utf8.decode(ModQrTransfer.decodeBase32('MZXW6YTB')!), 'fooba');
       expect(
-        utf8.decode(ModQrTransfer._decodeBase32('MZXW6YTBOI======')!),
+        utf8.decode(ModQrTransfer.decodeBase32('MZXW6YTBOI======')!),
         'foobar',
       );
-      expect(ModQrTransfer._decodeBase32(''), isEmpty);
+      expect(ModQrTransfer.decodeBase32(''), isEmpty);
     });
 
     test('rejects malformed groups and characters', () {
-      expect(ModQrTransfer._decodeBase32('M1======'), isNull);
-      expect(ModQrTransfer._decodeBase32('ABC'), isNull);
-      expect(ModQrTransfer._decodeBase32('A'), isNull);
+      expect(ModQrTransfer.decodeBase32('M1======'), isNull);
+      expect(ModQrTransfer.decodeBase32('ABC'), isNull);
+      expect(ModQrTransfer.decodeBase32('A'), isNull);
     });
 
     test('base64url rejects bad length and characters', () {
-      expect(ModQrTransfer._decodeBase64Url('A'), isNull);
-      expect(ModQrTransfer._decodeBase64Url('A?B'), isNull);
-      expect(
-        utf8.decode(ModQrTransfer._decodeBase64Url('Zm9vYmFy')!),
-        'foobar',
-      );
+      expect(ModQrTransfer.decodeBase64Url('A'), isNull);
+      expect(ModQrTransfer.decodeBase64Url('A?B'), isNull);
+      expect(utf8.decode(ModQrTransfer.decodeBase64Url('Zm9vYmFy')!), 'foobar');
       // Padding is tolerated.
       expect(
-        utf8.decode(ModQrTransfer._decodeBase64Url('Zm9vYmFy==')!),
+        utf8.decode(ModQrTransfer.decodeBase64Url('Zm9vYmFy==')!),
         'foobar',
       );
     });
 
     test('derives the key only for valid Base32 secrets', () {
-      expect(ModQrTransfer._deriveKey(secret), isNotNull);
-      expect(ModQrTransfer._deriveKey(secret)?.length, 32);
-      expect(ModQrTransfer._deriveKey('short'), isNull);
-      expect(ModQrTransfer._deriveKey('abc1234567890123'), isNull);
+      expect(ModQrTransfer.deriveKey(secret), isNotNull);
+      expect(ModQrTransfer.deriveKey(secret)?.length, 32);
+      expect(ModQrTransfer.deriveKey('short'), isNull);
+      expect(ModQrTransfer.deriveKey('abc1234567890123'), isNull);
     });
   });
 
@@ -298,7 +295,7 @@ void main() {
             '{"p":{"configType":"SOCKS","server":"x.com","serverPort":"1080",'
             '"remarks":"ok"}}]}',
       );
-      final body = ModQrTransfer._decodeBase64Url(
+      final body = ModQrTransfer.decodeBase64Url(
         base64Url.encode(utf8.encode('x' * 30)).replaceAll('=', ''),
       );
       final parts = await transfer.expand(

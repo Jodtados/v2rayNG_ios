@@ -55,7 +55,6 @@ final class ModQrTransfer {
 
   static final ModQrTransfer _instance = ModQrTransfer._(
     const String.fromEnvironment(secretDefine),
-    const MethodChannel(_channelName),
     _decryptViaChannel,
   );
 
@@ -65,12 +64,11 @@ final class ModQrTransfer {
   ModQrTransfer.forTesting({
     String secret = '',
     Future<String?> Function(String dataBase64, List<int> key)? decrypt,
-  }) : this._(secret, const MethodChannel(_channelName), decrypt);
+  }) : this._(secret, decrypt ?? _decryptViaChannel);
 
-  ModQrTransfer._(this._secret, this._channel, this._decrypt);
+  ModQrTransfer._(this._secret, this._decrypt);
 
   final String _secret;
-  final MethodChannel _channel;
   final Future<String?> Function(String dataBase64, List<int> key) _decrypt;
 
   /// The import path only arms when a build-time secret is present.
@@ -89,13 +87,13 @@ final class ModQrTransfer {
     if (!isToken(input)) {
       throw const FormatException('Not a QR transfer token');
     }
-    final data = _decodeBase64Url(
+    final data = decodeBase64Url(
       input.trimLeft().substring(tokenPrefix.length).trim(),
     );
     if (data == null || data.length < _ivLengthBytes + _gcmTagBytes) {
       throw const FormatException('Invalid QR transfer token');
     }
-    final key = _deriveKey(_secret);
+    final key = deriveKey(_secret);
     if (key == null) {
       throw const FormatException('Invalid QR transfer secret');
     }
@@ -221,23 +219,23 @@ final class ModQrTransfer {
     final insecure = p['insecure'];
     final json = jsonEncode(<String, String>{
       'v': '2',
-      'ps': _string(p['remarks']),
-      'add': _string(p['server']),
-      'port': _string(p['serverPort']),
-      'id': _string(p['password']),
+      'ps': _string(p['remarks']) ?? '',
+      'add': _string(p['server']) ?? '',
+      'port': _string(p['serverPort']) ?? '',
+      'id': _string(p['password']) ?? '',
       'aid': '0',
-      'scy': _string(p['method']),
-      'net': _string(p['network']),
+      'scy': _string(p['method']) ?? '',
+      'net': _string(p['network']) ?? '',
       'type': type,
       'host': host,
       'path': path,
-      'tls': _string(p['security']),
-      'sni': _string(p['sni']),
-      'alpn': _string(p['alpn']),
-      'fp': _string(p['fingerPrint']),
+      'tls': _string(p['security']) ?? '',
+      'sni': _string(p['sni']) ?? '',
+      'alpn': _string(p['alpn']) ?? '',
+      'fp': _string(p['fingerPrint']) ?? '',
       'insecure': insecure == null ? '' : (insecure == true ? '1' : '0'),
-      'vcn': _string(p['verifyPeerCertByName']),
-      'pcs': _string(p['pinnedCA256']),
+      'vcn': _string(p['verifyPeerCertByName']) ?? '',
+      'pcs': _string(p['pinnedCA256']) ?? '',
     });
     return base64.encode(utf8.encode(json));
   }
@@ -372,7 +370,7 @@ final class ModQrTransfer {
   /// Base32 decoder with RFC 4648 final-group validation; the Android side
   /// rejects the same malformed secrets before deriving keys.
   @visibleForTesting
-  static Uint8List? _decodeBase32(String input) {
+  static Uint8List? decodeBase32(String input) {
     final clean = input.trimRight('=');
     if (clean.length % 8 == 1 ||
         clean.length % 8 == 3 ||
@@ -396,16 +394,16 @@ final class ModQrTransfer {
   }
 
   @visibleForTesting
-  static Uint8List? _deriveKey(String secret) {
+  static Uint8List? deriveKey(String secret) {
     if (!RegExp(r'^[A-Z2-7]{16,}$').hasMatch(secret)) return null;
     return Uint8List.fromList(
-      sha256.convert(_decodeBase32(secret) ?? Uint8List(0)).bytes,
+      sha256.convert(decodeBase32(secret) ?? Uint8List(0)).bytes,
     );
   }
 
   /// Base64url decoder tolerating (but never requiring) '=' padding.
   @visibleForTesting
-  static Uint8List? _decodeBase64Url(String input) {
+  static Uint8List? decodeBase64Url(String input) {
     var clean = input.trim().replaceAll('=', '');
     if (clean.length % 4 == 1) return null;
     clean += '=' * ((4 - clean.length % 4) % 4);
