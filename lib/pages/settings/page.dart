@@ -20,7 +20,6 @@ import 'package:onexray/service/shared/event_bus/enum.dart';
 import 'package:onexray/service/shared/event_bus/service.dart';
 import 'package:onexray/service/shared/event_bus/state.dart';
 import 'package:onexray/service/shared/failure.dart';
-import 'package:onexray/service/settings/backup/service.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -188,18 +187,6 @@ class SettingsPage extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   dividerIndent: 0,
                   children: [
-                    if (BackupService.supported)
-                      SettingRow(
-                        title: l10n.backupTitle,
-                        minHeight: rowHeight,
-                        contentPadding: rowPadding,
-                        titleStyle: AppTypography.settingsRow,
-                        showChevron: true,
-                        onTap: () => controller.openSetting(
-                          context,
-                          AppPageDestination.backup,
-                        ),
-                      ),
                     SettingRow(
                       title: l10n.prototypeClearData,
                       minHeight: rowHeight,

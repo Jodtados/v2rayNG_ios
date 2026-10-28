@@ -31,6 +31,7 @@
 		EB2400000000000000000041 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EB2400000000000000000040 /* InfoPlist.strings */; };
 		EB240000000000000000010C /* AppleVpnStartAdmission.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2400000000000000000016 /* AppleVpnStartAdmission.swift */; };
 		EB2400000000000000000051 /* ModActivation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2400000000000000000050 /* ModActivation.swift */; };
+		EB2400000000000000000053 /* ModQr.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2400000000000000000052 /* ModQr.swift */; };
 		EB67F754308F0B400096B893 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB67F753308F0B400096B893 /* WidgetKit.framework */; };
 		EB67F756308F0B400096B893 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB67F755308F0B400096B893 /* SwiftUI.framework */; };
 		EB67F767308F0B400096B893 /* widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EB67F752308F0B400096B893 /* widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -136,6 +137,7 @@
 		EB2400000000000000000014 /* AppleWidgetApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppleWidgetApi.swift; path = Runner/AppleWidgetApi.swift; sourceTree = SOURCE_ROOT; };
 		EB2400000000000000000016 /* AppleVpnStartAdmission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppleVpnStartAdmission.swift; path = ../swift/iOS/AppleVpnStartAdmission.swift; sourceTree = SOURCE_ROOT; };
 		EB2400000000000000000050 /* ModActivation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModActivation.swift; sourceTree = "<group>"; };
+		EB2400000000000000000052 /* ModQr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModQr.swift; sourceTree = "<group>"; };
 		EB2400000000000000000021 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = widget/en.lproj/Widget.strings; sourceTree = SOURCE_ROOT; };
 		EB2400000000000000000022 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "widget/zh-Hans.lproj/Widget.strings"; sourceTree = SOURCE_ROOT; };
 		EB2400000000000000000023 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "widget/zh-Hant.lproj/Widget.strings"; sourceTree = SOURCE_ROOT; };
@@ -289,6 +291,7 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				EB2400000000000000000050 /* ModActivation.swift */,
+				EB2400000000000000000052 /* ModQr.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
@@ -581,6 +584,7 @@
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
 				EB2400000000000000000051 /* ModActivation.swift in Sources */,
+				EB2400000000000000000053 /* ModQr.swift in Sources */,
 				EB68C7042F94D150007C293A /* Constants.swift in Sources */,
 				EB68C7052F94D150007C293A /* Tools.swift in Sources */,
 				EB68C7062F94D150007C293A /* Model.swift in Sources */,

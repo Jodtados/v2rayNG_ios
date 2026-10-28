@@ -63,7 +63,6 @@ enum AppPageDestination {
   serverDialing("server-dialing"),
   autoUpdate("auto-update"),
   localApi("local-api"),
-  backup("backup"),
   desktopSettings("desktop-settings"),
   appIcon("app-icon"),
   theme("theme"),

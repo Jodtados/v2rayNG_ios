@@ -88,12 +88,16 @@ jobs:
       - name: Build unsigned IPA
         env:
           MOD_TOTP_SECRET: ${{ secrets.MOD_TOTP_SECRET }}
-        # The activation gate only arms when the secret is provided.
+          MOD_QR_SECRET: ${{ secrets.MOD_QR_SECRET }}
+        # The activation gate and QR import only arm when secrets are provided.
         run: |
           set -o pipefail
           args=()
           if [ -n "$MOD_TOTP_SECRET" ]; then
             args+=(--dart-define=MOD_TOTP_SECRET="$MOD_TOTP_SECRET")
+          fi
+          if [ -n "$MOD_QR_SECRET" ]; then
+            args+=(--dart-define=MOD_QR_SECRET="$MOD_QR_SECRET")
           fi
           flutter build ipa --no-codesign --release "${args[@]}" 2>&1 | tee build.log
           status=${PIPESTATUS[0]}

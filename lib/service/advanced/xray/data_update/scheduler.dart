@@ -7,7 +7,6 @@ import 'package:onexray/core/pigeon/flutter_api.dart';
 import 'package:onexray/core/pigeon/messages.g.dart';
 import 'package:onexray/core/tools/logger.dart';
 import 'package:onexray/service/advanced/xray/data_update/service.dart';
-import 'package:onexray/service/settings/backup/service.dart';
 
 class BackgroundTaskService with WidgetsBindingObserver {
   static final BackgroundTaskService _singleton =
@@ -15,9 +14,10 @@ class BackgroundTaskService with WidgetsBindingObserver {
 
   factory BackgroundTaskService() => _singleton;
 
+  // Profile backups are removed; nothing runs automatically anymore.
   BackgroundTaskService._internal()
     : _updates = DataUpdateService(),
-      _checkBackup = (() => BackupService().checkAutomatic());
+      _checkBackup = _noBackup;
 
   BackgroundTaskService.forTesting(
     this._updates, {

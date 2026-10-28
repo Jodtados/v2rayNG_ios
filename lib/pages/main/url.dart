@@ -11,7 +11,6 @@ import 'package:onexray/pages/advanced/xray/lan_proxy/page.dart';
 import 'package:onexray/pages/advanced/xray/dialing/page.dart';
 import 'package:onexray/pages/advanced/local_api/page.dart';
 import 'package:onexray/pages/settings/about/page.dart';
-import 'package:onexray/pages/settings/backup/page.dart';
 import 'package:onexray/pages/advanced/tunnel/apple/page.dart';
 import 'package:onexray/pages/advanced/tunnel/apple/wifi.dart';
 import 'package:onexray/pages/advanced/tunnel/android/page.dart';
@@ -400,7 +399,6 @@ final _pageRoutes = <_PageRoute>[
     ),
   ),
   _route(AppPageDestination.autoUpdate, (_, _) => const AutoUpdatePage()),
-  _route(AppPageDestination.backup, (_, _) => const BackupPage()),
   _route(
     AppPageDestination.desktopSettings,
     (_, _) => const DesktopSettingsPage(),

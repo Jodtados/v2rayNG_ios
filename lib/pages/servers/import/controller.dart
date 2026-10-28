@@ -12,6 +12,7 @@ import 'package:onexray/pages/shared/page_cubit.dart';
 import 'package:onexray/pages/servers/import/page.dart';
 import 'package:onexray/pages/servers/subscription/format_confirmation.dart';
 import 'package:onexray/pages/shared/widgets/adaptive_dialog.dart';
+import 'package:onexray/service/mod/qr_transfer/qr_transfer.dart';
 import 'package:onexray/service/servers/import.dart';
 import 'package:onexray/service/shared/failure.dart';
 import 'package:onexray/service/servers/subscription/failure.dart';
@@ -515,6 +516,10 @@ class ServerImportController extends PageCubit<ServerImportPageState> {
     BuildContext context,
     String input,
   ) async {
+    final modQr = ModQrTransfer();
+    if (modQr.isToken(input)) {
+      return _importQrToken(context, modQr, input);
+    }
     final ServerImportDetection detection;
     try {
       detection = service.detect(input);
@@ -635,6 +640,56 @@ class ServerImportController extends PageCubit<ServerImportPageState> {
       }
     }
     return result;
+  }
+
+  /// Encrypted QR transfer tokens (exported by the Android mod build)
+  /// become regular import inputs: one share-links text plus each raw
+  /// custom config. The token either opens completely or nothing is
+  /// imported, mirroring the all-or-nothing Android import.
+  Future<ServerImportResult?> _importQrToken(
+    BuildContext context,
+    ModQrTransfer modQr,
+    String input,
+  ) async {
+    List<String> parts;
+    try {
+      parts = await modQr.expand(input);
+    } catch (error) {
+      if (context.mounted) {
+        emit(
+          state.copyWith(
+            error: appFailureMessage(
+              AppLocalizations.of(context)!,
+              error,
+              operation: AppLocalizations.of(context)!
+                  .prototypeCannotReadContent,
+            ),
+          ),
+        );
+      }
+      return null;
+    }
+    ServerImportResult? total;
+    for (final part in parts) {
+      final result = await _importText(context, part);
+      if (result != null) {
+        total = total == null
+            ? result
+            : ServerImportResult(
+                count: total.count + result.count,
+                rawCount: total.rawCount + result.rawCount,
+                customCount: total.customCount + result.customCount,
+                geoDataCount: total.geoDataCount + result.geoDataCount,
+                subscriptionCount:
+                    total.subscriptionCount + result.subscriptionCount,
+                failedGeoData: [
+                  ...total.failedGeoData,
+                  ...result.failedGeoData,
+                ],
+              );
+      }
+    }
+    return total;
   }
 
   Future<String?> _scan(BuildContext context) async {
