@@ -20,8 +20,27 @@ final class AppHostApi: @preconcurrency BridgeHostApi {
         if let groupUrl = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupId()) {
             let path = groupUrl.adaptedPath()
             completion(.success(path))
-        } else {
-            completion(.success(""))
+            return
+        }
+        // App Group container is unavailable when the profile strips the
+        // entitlement (free sideloaded builds). Fall back to the app container
+        // so startup can proceed; the tunnel receives its configuration via
+        // NETunnelProviderProtocol and does not depend on the shared container.
+        do {
+            let supportUrl = try FileManager.default.url(
+                for: .applicationSupportDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: true
+            )
+            let fallback = supportUrl.appendingPathComponent("TunFiles", isDirectory: true)
+            try FileManager.default.createDirectory(
+                at: fallback,
+                withIntermediateDirectories: true
+            )
+            completion(.success(fallback.adaptedPath()))
+        } catch {
+            completion(.failure(error))
         }
     }
 
