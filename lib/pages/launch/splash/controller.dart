@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:onexray/pages/shared/page_cubit.dart';
+import 'package:onexray/core/tools/diag_trace.dart';
 import 'package:onexray/core/tools/logger.dart';
 import 'package:onexray/pages/launch/route.dart';
 import 'package:onexray/service/launch/bootstrap.dart';
@@ -24,12 +25,17 @@ class SplashController extends PageCubit<SplashPageState> {
 
   Future<void> retry() async {
     emit(const SplashPageState());
+    diagTrace('SPLASH retry-enter');
     try {
       final destination = await LaunchBootstrapService().resolveDestination();
+      diagTrace('SPLASH resolved route=${destination.route}');
       if (isPageActive) {
         emit(state.navigate(destination.route));
       }
     } catch (e, stackTrace) {
+      diagTrace(
+        'SPLASH error $e | ${stackTrace.toString().replaceAll('\n', ' | ')}',
+      );
       ygLogger("initRouter error: $e\n$stackTrace");
       try {
         await AppStartupService().showMainWindow();
