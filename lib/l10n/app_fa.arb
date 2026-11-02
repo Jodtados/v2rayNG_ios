@@ -978,6 +978,7 @@
     }
   },
   "modSettingsTitle": "محدودیت‌ها",
+  "modVpnUnavailable": "‏VPN در این نسخه در دسترس نیست: نمایه امضا فاقد مجوز network-extension است. مدیریت سرورها و درون‌ریزی همچنان کار می‌کنند.",
   "modTrafficLimit": "محدودیت ترافیک",
   "modTrafficLimitOff": "خاموش",
   "modTrafficLimitField": "محدودیت به مگابایت (۰ = خاموش)",

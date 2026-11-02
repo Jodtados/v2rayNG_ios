@@ -85,6 +85,33 @@ void main() {
         l.prototypeChooseNamedRoute,
       );
     });
+
+    test('refused platform permissions explain degraded mode in $locale', () {
+      final permission = PlatformPermissionResult(
+        kind: PlatformPermissionKind.appleVpn,
+        state: PlatformPermissionState.failed,
+        message: 'Permission denied',
+      );
+      expect(
+        connectionFailureMessage(
+          l,
+          issue: 'nativeStatusFailed',
+          permission: permission,
+        ),
+        l.modVpnUnavailable,
+      );
+      expect(
+        connectionFailureMessage(
+          l,
+          error: ConnectionHostException(
+            'nativeStatusFailed',
+            permission: permission,
+            cause: permission.message,
+          ),
+        ),
+        '${l.modVpnUnavailable}\nPermission denied',
+      );
+    });
   }
 
   test(

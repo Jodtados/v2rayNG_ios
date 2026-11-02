@@ -3153,6 +3153,7 @@
     }
   },
   "modSettingsTitle": "Limits",
+  "modVpnUnavailable": "VPN is unavailable in this build: the signing profile has no network-extension entitlement. Server management and imports still work.",
   "modTrafficLimit": "Traffic limit",
   "modTrafficLimitOff": "Off",
   "modTrafficLimitField": "Limit, MB (0 — off)",

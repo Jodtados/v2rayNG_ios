@@ -978,6 +978,7 @@
     }
   },
   "modSettingsTitle": "限额",
+  "modVpnUnavailable": "此构建的 VPN 不可用：签名描述文件缺少网络扩展授权。服务器管理和导入仍可使用。",
   "modTrafficLimit": "流量限制",
   "modTrafficLimitOff": "关闭",
   "modTrafficLimitField": "限制，MB（0 = 关闭）",

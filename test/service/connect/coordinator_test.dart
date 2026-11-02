@@ -733,6 +733,40 @@ void main() {
     expect(coordinator.state.value.permission, permission);
   });
 
+  test(
+    'initialization degrades instead of throwing on a refused permission',
+    () async {
+      // An entitlement-less signing profile makes every native VPN call fail
+      // with a platform permission refusal; startup must stay usable.
+      final permission = PlatformPermissionResult(
+        kind: PlatformPermissionKind.appleVpn,
+        state: PlatformPermissionState.failed,
+        message: 'Permission denied',
+      );
+      final coordinator = ConnectionCoordinator(
+        database: db,
+        readRuntime: () async => null,
+        inspect: (_, {observedStatus}) async => throw ConnectionHostException(
+          'nativeStatusFailed',
+          permission: permission,
+          cause: permission.message,
+        ),
+      );
+      addTearDown(coordinator.dispose);
+
+      await coordinator.initialize(observe: false, registerReferences: false);
+
+      expect(coordinator.state.value.phase, ConnectionPhase.failed);
+      expect(coordinator.state.value.issue, 'nativeStatusFailed');
+      expect(coordinator.state.value.permission, permission);
+
+      // Later initialize() calls reuse the cached degraded future instead of
+      // re-running the inspection or surfacing the error to the caller.
+      await coordinator.initialize(observe: false, registerReferences: false);
+      expect(coordinator.state.value.phase, ConnectionPhase.failed);
+    },
+  );
+
   for (final kind in [
     PlatformPermissionKind.appleVpn,
     PlatformPermissionKind.macosSystemExtension,

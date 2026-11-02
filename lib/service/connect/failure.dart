@@ -47,9 +47,10 @@ String connectionFailureMessage(
     },
     'interfaceRequired' ||
     'interfaceUnavailable' => l.prototypeChooseInterfaceNotice,
-    'readFailed' ||
-    'runtimeUnavailable' ||
-    'nativeStatusFailed' => l.prototypeTemporarilyUnavailable,
+    'readFailed' || 'runtimeUnavailable' || 'nativeStatusFailed' =>
+      permission?.state == PlatformPermissionState.failed
+          ? l.modVpnUnavailable
+          : l.prototypeTemporarilyUnavailable,
     _ => nativeOperationFailureTitle(l, issue),
   };
   if (message == null) return appFailureMessage(l, error, operation: operation);

@@ -204,7 +204,16 @@ class ConnectionCoordinator with WidgetsBindingObserver {
         .catchError((Object error, StackTrace stack) {
           unawaited(_statusSubscription?.cancel());
           _statusSubscription = null;
-          _initializing = null;
+          // A platform permission refusal is permanent for this build (an
+          // iOS signing profile without the network-extension entitlement).
+          // Keep the cached initialization so later commands do not re-run
+          // the whole startup inspection against a guaranteed failure.
+          final permissionDenied =
+              error is ConnectionHostException &&
+              error.permission?.state == PlatformPermissionState.failed;
+          if (!permissionDenied) {
+            _initializing = null;
+          }
           _disposeStatus();
           state.value = ConnectionView(
             phase: ConnectionPhase.failed,
@@ -218,6 +227,11 @@ class ConnectionCoordinator with WidgetsBindingObserver {
                 : null,
           );
           _failureLatched = true;
+          // Degraded mode: the failed status stays visible on the connect
+          // page while startup and every non-VPN feature keep working.
+          if (permissionDenied) {
+            return;
+          }
           Error.throwWithStackTrace(error, stack);
         });
   }

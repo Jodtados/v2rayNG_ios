@@ -978,6 +978,7 @@
     }
   },
   "modSettingsTitle": "限額",
+  "modVpnUnavailable": "此建置的 VPN 無法使用：簽署描述檔缺少網路延伸授權。伺服器管理與匯入仍可使用。",
   "modTrafficLimit": "流量限制",
   "modTrafficLimitOff": "關閉",
   "modTrafficLimitField": "限制，MB（0 = 關閉）",
