@@ -1213,10 +1213,9 @@ void main() {
       );
       addTearDown(coordinator.dispose);
 
-      await expectLater(
-        coordinator.initialize(observe: false, registerReferences: false),
-        throwsA(isA<ConnectionHostException>()),
-      );
+      // A refused platform permission degrades startup instead of failing it:
+      // the issue stays a native error, never a permission request.
+      await coordinator.initialize(observe: false, registerReferences: false);
       expect(coordinator.state.value.phase, ConnectionPhase.failed);
       expect(coordinator.state.value.issue, 'nativeStatusFailed');
       expect(coordinator.state.value.permission, permission);

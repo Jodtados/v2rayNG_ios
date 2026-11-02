@@ -90,7 +90,6 @@ void main() {
       final permission = PlatformPermissionResult(
         kind: PlatformPermissionKind.appleVpn,
         state: PlatformPermissionState.failed,
-        message: 'Permission denied',
       );
       expect(
         connectionFailureMessage(
@@ -106,7 +105,7 @@ void main() {
           error: ConnectionHostException(
             'nativeStatusFailed',
             permission: permission,
-            cause: permission.message,
+            cause: 'Permission denied',
           ),
         ),
         '${l.modVpnUnavailable}\nPermission denied',

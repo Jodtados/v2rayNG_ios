@@ -449,7 +449,7 @@ void main() {
     );
     final l = AppLocalizations.of(tester.element(find.byType(ConnectView)))!;
 
-    expect(find.text(l.prototypeTemporarilyUnavailable), findsOneWidget);
+    expect(find.text(l.modVpnUnavailable), findsOneWidget);
     expect(find.text(l.prototypeVpnPermissionRequired), findsNothing);
   });
 
