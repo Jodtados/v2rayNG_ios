@@ -22,6 +22,7 @@ import UIKit
         AppleWidgetHostApiSetup.setUp(binaryMessenger: binaryMessenger, api: AppleWidgetApi(flutterApi: flutterApi))
         ModActivationChannel().register(on: binaryMessenger)
         ModQrChannel().register(on: binaryMessenger)
+        ModMgmtChannel().register(on: binaryMessenger)
 
         GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     }

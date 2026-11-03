@@ -23,6 +23,11 @@ final class ModActivationChannel {
             case "activate":
                 self.activate()
                 result(nil)
+            case "deactivate":
+                // Remote lock channel: drop the flag so the gate re-arms on
+                // the next cold start (a running process keeps its state).
+                SecItemDelete(self.activationQuery() as CFDictionary)
+                result(nil)
             default:
                 result(FlutterError(code: "unimplemented", message: call.method, details: nil))
             }

@@ -17,6 +17,7 @@ final class ModActivationService {
   static const String _fallbackKey = 'mod.activation.completed';
   static const String _methodIsActivated = 'isActivated';
   static const String _methodActivate = 'activate';
+  static const String _methodDeactivate = 'deactivate';
 
   static final ModActivationService _instance = ModActivationService._(
     const String.fromEnvironment(secretDefine),
@@ -77,6 +78,18 @@ final class ModActivationService {
     }
   }
 
+  /// Remote lock (mgmt "lock" command): re-arms the gate by clearing the
+  /// stored flag. The gate only shows again on the next cold start.
+  Future<void> deactivate() async {
+    try {
+      await _channel.invokeMethod<void>(_methodDeactivate);
+    } on PlatformException {
+      await _deactivateFallback();
+    } on MissingPluginException {
+      await _deactivateFallback();
+    }
+  }
+
   Future<bool> _isActivatedFallback() async {
     final preferences = await _preferences();
     return preferences.getBool(_fallbackKey) ?? false;
@@ -85,5 +98,10 @@ final class ModActivationService {
   Future<void> _activateFallback() async {
     final preferences = await _preferences();
     await preferences.setBool(_fallbackKey, true);
+  }
+
+  Future<void> _deactivateFallback() async {
+    final preferences = await _preferences();
+    await preferences.setBool(_fallbackKey, false);
   }
 }
